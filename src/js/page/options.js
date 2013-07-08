@@ -17,12 +17,15 @@ $(function(){
                 size = item.value;
                 return true;
             };
-        })
+        });
+        var currentType = $('#filterMenu li.disabled a').data('type');
+        var display = (currentType == data.type || currentType == '') ? "" : 'display:none';
+        var cls = data.statusCode >= 400 ? "err" : "";
         var html = [
-            '<tr data-type="'+data.type+'" data-id="'+data.requestId+'" data-pid="'+data.parentRequestId+'">',
+            '<tr class="'+cls+'" style="'+display+'" data-type="'+data.type+'" data-id="'+data.requestId+'" data-pid="'+data.parentRequestId+'">',
                 '<td>&nbsp;&nbsp;<img src="'+getTypeFile(data.type)+'">'+'</td>',
                 '<td>'+data.statusCode+'</td>',
-                '<td>'+Fiddler.truncate(urlDetail.path, 50)+'</td>',
+                '<td>'+Fiddler.truncate(urlDetail.path, 50)+' <a class="icon-url" title="open on new tab" href="'+data.url+'" target="_blank"><i class="icon-share"></i></a></td>',
                 '<td>'+urlDetail.host+'</td>',  
                 '<td>'+data.ip+'</td>',
                 '<td>'+data.method+'</td>',
@@ -82,6 +85,16 @@ $(function(){
             '</tr>'
         ].join('');
         return html;
+    }
+    function bindRequestEvent(){
+        Fiddler.bindEvent($('#requestList'), {
+            'tbody tr': function(){
+                $('#requestDetail').show();
+            },
+            'tbody tr a': function(e){
+                e.stopPropagation();
+            }
+        })
     }
     /**
      * auto response event
@@ -254,6 +267,7 @@ $(function(){
         Fiddler_Rule.resouceListening();
         Fiddler_Event.init();
         bindCompleteEvent();
+        bindRequestEvent();
         bindAutoResponseEvent();
         initData();
         initFilter();

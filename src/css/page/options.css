@@ -17,6 +17,15 @@ header.navbar{
     bottom: 0px;
     overflow: auto;
 }
+#requestList tbody tr a.icon-url{
+    display: none;
+}
+#requestList tbody tr.err{
+    color: red;
+}
+#requestList tbody tr:hover a.icon-url{
+    display: inline;
+}
 .disable-cache{
     position: relative;
     top: -4px;
@@ -32,6 +41,12 @@ header.navbar{
     border-left:1px solid #dddddd;
     border-top-right-radius: 4px;
     -webkit-box-shadow: 0 0 5px 0 #eee;
+}
+#requestDetail .icon-remove{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
 }
 #autoResponseList{
     position: fixed;
