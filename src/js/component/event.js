@@ -11,15 +11,15 @@ var Fiddler_Event = function(){
                 return result;
             };
             return {};
-           }, {urls:["<all_urls>"]}, ["blocking", "requestBody"] 
+           }, {urls:["http://*/*"]}, ["blocking", "requestBody"] 
         );
         chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
             Fiddler_Rule.fireSome("onBeforeSendHeaders", details);
-          }, {urls: ["<all_urls>"]}, ["blocking", "requestHeaders"]
+          }, {urls: ["http://*/*"]}, ["blocking", "requestHeaders"]
         );
         chrome.webRequest.onCompleted.addListener(function(details) {
             Fiddler_Rule.fire("onCompleted", details);
-        }, {urls: ["<all_urls>"]}, ["responseHeaders"]);
+        }, {urls: ["http://*/*"]}, ["responseHeaders"]);
     }
     return {
         init: function(){

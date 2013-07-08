@@ -34,6 +34,19 @@ $(function(){
         ].join('');
         return html;
     }
+    function getItemRuleHtml(data){
+        var pattern = data.patternType + ": " + data.pattern;
+        var replace = data.replaceType + ": " + data.replace;
+        var html = [
+            '<tr>',
+                '<td><input type="checkbox" name="ruleCheck" '+(data.enable ? "checked" : "")+' class="rule-check" /></td>',
+                '<td><p class="pattern">'+pattern+'</p></td>',
+                '<td><p class="replace">'+replace+'</p></td>',
+                '<td><i class="icon icon-edit"></i> <i class="icon icon-remove"></i></td>',
+            '</tr>'
+        ].join('');
+        return html;
+    }
     function getTypeFile(type){
         var list = {
             "image": "img.png",
@@ -47,17 +60,6 @@ $(function(){
         return "../img/icon/" + file;
     }
     /**
-     * hide prefix frames
-     * @return {[type]} [description]
-     */
-    function hideFrames(){
-        $('#requestList table tr[data-pid="0"]').each(function(){
-            var self = $(this).addClass('info');
-            var requestId = self.attr('data-id');
-            $('#requestList table tr[data-pid="'+requestId+'"]').hide();
-        })
-    }
-    /**
      * a request complete event
      * @return {[type]} [description]
      */
@@ -65,26 +67,12 @@ $(function(){
         var table = $('#requestList table tbody');
         Fiddler_Resource.on("onCompleted", function(detail){
             var data = detail.data;
-            if (data.type == 'main_frame') {
-                //hideFrames();
-            };
             var html = getItemHtml(data);
             if (html) {
                 $(html).appendTo(table);
                 $('#requestList')[0].scrollTop = 1000000;
             };
         })
-    }
-    function getItemRuleHtml(pattern, replace, checked){
-        var html = [
-            '<tr>',
-                '<td><input type="checkbox" name="ruleCheck" '+(checked ? "checked" : "")+' class="rule-check" /></td>',
-                '<td><p class="pattern">'+pattern+'</p></td>',
-                '<td><p class="replace">'+replace+'</p></td>',
-                '<td><i class="icon icon-edit"></i> <i class="icon icon-remove"></i></td>',
-            '</tr>'
-        ].join('');
-        return html;
     }
     function bindRequestEvent(){
         Fiddler.bindEvent($('#requestList'), {
@@ -121,6 +109,8 @@ $(function(){
                 var edit = $(this).parents('.rule-edit-item');
                 edit.find('input.rule-input').val(value);
                 edit.find(".dropdown-menu").slideUp();
+                var defaultValue = $(this).data('value');
+                edit.find("input.rule-value").val(defaultValue);
             },
             'button.btn-add': function(){
                 if ($(this).hasClass('disabled')) {
@@ -135,24 +125,31 @@ $(function(){
                 if ($(this).hasClass('disabled')) {
                     return false;
                 };
-                var patternInput = $('#patternInput').val().trim();
-                if (!patternInput) {
-                    return $('#patternInput').focus();
+                var data = {
+                    patternType: $('#rulePatternType').val().trim(),
+                    pattern: $('#rulePattern').val().trim(),
+                    replaceType: $('#ruleReplaceType').val().trim(),
+                    replace: $('#ruleReplace').val().trim(),
+                    enable: true
+                }
+                if (!data.pattern) {
+                    return $('#rulePattern').focus();
                 };
-                var replaceInput = $('#replaceInput').val().trim();
-                if (!replaceInput) {
-                    return $('#replaceInput').focus();
+                if (!data.replace && data.replaceType != 'Cancel') {
+                    return $('#ruleReplace').focus();
                 };
                 var tr = $('#autoResponseList .rule-list tbody tr.info');
                 if (tr.length) {
-                    tr.find('p.pattern').html(patternInput);
-                    tr.find('p.replace').html(replaceInput);
+                    tr.find('p.pattern').html(data.patternType + ": " + data.pattern);
+                    tr.find('p.replace').html(data.replaceType + ": " + data.replace);
+                    tr.attr('data-info', JSON.stringify(data));
                 }else{
-                    var html = getItemRuleHtml(patternInput, replaceInput, true);
-                    $(html).appendTo($('#autoResponseList .rule-list tbody'));
+                    var item = $(getItemRuleHtml(data));
+                    item.attr('data-info', JSON.stringify(data));
+                    item.appendTo($('#autoResponseList .rule-list tbody'));
                 }
-                $('#patternInput').val('');
-                $('#replaceInput').val('');
+                $('#rulePattern').val('');
+                $('#ruleReplace').val('');
                 saveRules();
             },
             '.rule-check': function(){
@@ -163,10 +160,11 @@ $(function(){
                 var tr = $(this).parents('tr');
                 $('#autoResponseList .rule-list tbody tr').removeClass('info');
                 tr.addClass('info');
-                var pattern = tr.find('p.pattern').html();
-                var replace = tr.find('p.replace').html();
-                $('#patternInput').val(pattern);
-                $('#replaceInput').val(replace);
+                var data = JSON.parse(tr.attr('data-info'));
+                $('#rulePatternType').val(data.patternType);
+                $('#rulePattern').val(data.pattern);
+                $('#ruleReplaceType').val(data.replaceType);
+                $('#ruleReplace').val(data.replace);
             },
             '.icon-remove': function(e){
                 var tr = $(this).parents('tr');
@@ -188,7 +186,7 @@ $(function(){
     }
     function setRuleEditEnable(enable){
         var ruleEdit = $('#autoResponseList .rule-edit');
-        var input = ruleEdit.find('.rule-input');
+        var input = ruleEdit.find('.rule-input,.rule-value');
         var btn = ruleEdit.find('.btn-select');
         var btnSave = ruleEdit.find('.btn-save');
         btn[!enable ? "addClass" : "removeClass"]("disabled");
@@ -210,11 +208,10 @@ $(function(){
     function saveRules(){
         var rules = [];
         $('#autoResponseList .rule-list tbody tr').each(function(){
-            var $this = $(this);
-            var pattern = $this.find('p.pattern').html();
-            var replace = $this.find('p.replace').html();
-            var enable = $this.find('.rule-check')[0].checked;
-            rules.push([pattern, replace, enable]);
+            var data = JSON.parse($(this).attr('data-info') || "{}");
+            var checked = $(this).find('.rule-check')[0].checked;
+            data.enable = checked;
+            rules.push(data);
         });
         var enable = $('#enableAutoResponse')[0].checked;
         Fiddler_Rule.saveRules(rules, enable);
@@ -224,14 +221,15 @@ $(function(){
         var rules = Fiddler_Config.getRules();
         var parent = $('#autoResponseList .rule-list tbody');
         rules.forEach(function(item){
-            var html = getItemRuleHtml(item.pattern, item.replace, item.enable);
-            $(html).appendTo(parent);
+            var html = $(getItemRuleHtml(item));
+            html.attr('data-info', JSON.stringify(item));
+            html.appendTo(parent);
         });
         var enable = Fiddler_Config.getConfig("enable_auto_response");
         if (!enable) {
             $('#enableAutoResponse')[0].checked = false;
-            setRuleEditEnable(false);
-            setRuleListEnable(false);
+            $('#enableAutoResponse').trigger('click');
+            $('#enableAutoResponse').trigger('click');
         }else{
             saveRules();
         }

@@ -84,6 +84,7 @@ header.navbar{
     right: 10px;
     top: 15px;
 }
+
 #autoResponseList .rule-list{
     position: absolute;
     bottom: 150px;
@@ -91,6 +92,19 @@ header.navbar{
     top: 50px;
     width: 560px;
 }
+#autoResponseList .rule-list p.pattern{
+    width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#autoResponseList .rule-list p.replace{
+    width: 210px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 
 #autoResponseList .rule-edit{
     position: absolute;
@@ -101,13 +115,20 @@ header.navbar{
 }
 #autoResponseList .rule-edit .name{
     display: inline-block;
-    width: 80px;
+    width: 70px;
     text-align: right;
     padding-right: 10px;
 }
-#autoResponseList .rule-edit input[type="text"]{
-    width: 300px;
+#autoResponseList .rule-edit input.rule-pattern-type,
+#autoResponseList .rule-edit input.rule-replace-type{
+    width: 60px;
     padding-right: 40px;
+    padding-left: 10px;
+}
+#autoResponseList .rule-edit input.rule-pattern,
+#autoResponseList .rule-edit input.rule-replace{
+    margin-left: -30px;
+    width: 226px;
 }
 #autoResponseList .rule-edit .btn-save{
     position: absolute;
@@ -124,9 +145,13 @@ header.navbar{
     top: auto;
     display: none;
     bottom: 40px;
-    left: 93px;
-    width: 347px;
+    left: 83px;
+    width: 20px;
+    min-width: 110px;
     -webkit-box-shadow: 0 0 0 #000;
+}
+#autoResponseList .rule-edit .dropdown-menu > li > a{
+    padding: 3px 10px;
 }
 #autoResponseList .rule-edit .dropdown-menu li{
     position: relative;
@@ -136,16 +161,4 @@ header.navbar{
     top: 0px;
     z-index: 100;
     opacity: 0;
-}
-#autoResponseList .rule-list p.pattern{
-    width: 200px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-#autoResponseList .rule-list p.replace{
-    width: 210px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
 }

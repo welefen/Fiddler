@@ -26,17 +26,56 @@ var Fiddler_Rule = function(){
     });
     var _isResouceListening = false;
     Fiddler.mix(rule, {
+        match: function(requestInfo, rule){
+            if (rule.patternType == "Method") {
+                return this.matchMethod(requestInfo, rule);
+            }else if(rule.patternType == 'Header'){
+                return this.matchHeader(requestInfo, rule);
+            }else{
+                return this.matchUrl(requestInfo, rule);
+            }
+        },
+        matchUrl: function(requestInfo, rule){
+            var url = requestInfo.url;
+            var pattern = rule.pattern;
+            if (rule.patternType == 'String') {
+                return url.indexOf(pattern) >= 0;
+            };
+            if (pattern.indexOf('/') != 0) {
+                pattern = '/' + pattern + '/';
+            };
+            try{
+                pattern.replace(/^\/(.*)\/([mig]*)$/g, function(a, b, c) {
+                    pattern = new RegExp(b, c || '');
+                });
+                if (pattern.test(url)) {
+                    return true;
+                };
+            }catch(e){}
+            return false;
+        },
+        matchMethod: function(requestInfo, rule){
+            var method = requestInfo.method;
+            if (rule.replace == requestInfo.url) {
+                return false;
+            };
+            return rule.pattern.toLowerCase() == method.toLowerCase();
+        },
+        matchHeader: function(){
+
+        },
         /**
          * file replace
          * @param  {[type]} pattern  [description]
          * @param  {[type]} filename [description]
          * @return {[type]}          [description]
          */
-        addFileReplaceRule: function(pattern, filename){
+        addFileReplaceRule: function(rule){
+            var self = this;
             this.onBeforeRequest(function(data){
-                var url = data.data.url;
                 var encoding = Fiddler_Config.getEncoding();
-                if (Fiddler.match(url, pattern)) {
+                if (self.match(data.data, rule)) {
+                    var filename = rule.replace;
                     var content = Fiddler_File.getLocalFile(filename, encoding);
                     return {
                         redirectUrl: content
@@ -51,7 +90,7 @@ var Fiddler_Rule = function(){
          * @param  {[type]} filePath  [description]
          * @return {[type]}           [description]
          */
-        addDirReplaceRule: function(urlPrefix, filePath){
+        addDirReplaceRule: function(rule){
             this.onBeforeRequest(function(data){
                 var url = data.data.url;
                 var encoding = Fiddler_Config.getEncoding();
@@ -72,14 +111,13 @@ var Fiddler_Rule = function(){
          * @param  {[type]} targetPrefix [description]
          * @return {[type]}              [description]
          */
-        addUrlReplaceRule: function(urlPrefix, targetPrefix){
+        addUrlReplaceRule: function(rule){
+            var self = this;
             this.onBeforeRequest(function(data){
-                var url = data.data.url;
-                if (Fiddler.match(url, urlPrefix)) {
-                    var suffix = url.substr(urlPrefix.length);
-                    var tagetUrl = Fiddler.urlAdd(targetPrefix, suffix);
+                if (self.match(data.data, rule)) {
+                    var url = rule.replace;
                     return {
-                        redirectUrl: tagetUrl
+                        redirectUrl: url
                     }
                 };
                 return false;
@@ -116,6 +154,9 @@ var Fiddler_Rule = function(){
                 return false;
             })
         },
+        addHeaderRule: function(){
+
+        },
         /**
          * resource listening
          * @return {[type]} [description]
@@ -137,41 +178,25 @@ var Fiddler_Rule = function(){
         isRule: function(info){
             return info && info.pattern && info.type && info.args;
         },
-        parseRule: function(pattern, replace, enable){
-            pattern = pattern.trim();
-            replace = replace.trim();
-            var result = {
-                pattern: pattern,
-                replace: replace,
-                type: "",
-                args: [],
-                enable: enable
-            };
-            result.args[0] = pattern;
-            switch(true){
-                case replace.indexOf("File:") == 0: 
-                    result.type = "addFileReplaceRule";
-                    var file = replace.substr(5).trim();
-                    result.args[1] = file;
-                break;
-                case replace.indexOf("Path:") == 0:
-                    result.type = "addDirReplaceRule";
-                    var path = replace.substr(5).trim();
-                    result.args[1] = path;
-                break;
-                default:
-                    result.type = "addUrlReplaceRule";
-                    result.args[1] = replace;
+        parseRule: function(rule){
+            var types = {
+                "File": "addFileReplaceRule",
+                "Path": "addDirReplaceRule",
+                "Cancel": "addCancelRule",
+                "Delay": "addDelayRule",
+                "Redirect": "addUrlReplaceRule",
+                "Header": "addHeaderRule"
             }
-            return result;
+            rule.type = types[rule.replaceType];
+            return rule;
         },
-        addRule: function(pattern, replace, enable){
-            var result = this.parseRule(pattern, replace, enable);
+        addRule: function(rule){
+            var result = this.parseRule(rule);
             var type = result.type;
             if (this[type]) {
                 Fiddler_Config.addRule(result);
-                if (enable) {
-                    this[type].apply(this, result.args);
+                if (rule.enable) {
+                    this[type](result);
                 };
             };
         },
@@ -185,7 +210,7 @@ var Fiddler_Rule = function(){
             Fiddler_Config.clearRules();
             rules = rules || [];
             rules.forEach(function(item){
-                self.addRule.apply(self, item);
+                self.addRule(item);
             });
             return this;
         }

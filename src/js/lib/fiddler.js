@@ -176,8 +176,8 @@ var Fiddler = function(){
                     var result = o(msg);
                     if (result) {
                         ret = result;
+                        return true;
                     };
-                    return true;
                 });
                 return ret;
             }

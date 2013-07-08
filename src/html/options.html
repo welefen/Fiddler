@@ -133,38 +133,35 @@
   <div class="rule-edit">
     <fieldset>
       <legend>Rule Editor</legend>
+
       <div class="rule-edit-item">
         <span class="name">Pattern:</span> 
-        <input type="text" class="rule-input rule-pattern" id="patternInput" maxlength="100"><a class="btn btn-select btn-select" href="#"><i class="icon-chevron-down"></i></a>
-
+        <input id="rulePatternType" type="text" value="String" readonly="true" class="rule-input rule-pattern-type" maxlength="100"><a class="btn btn-select btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input type="text" class="rule-pattern rule-value" id="rulePattern" maxlength="100">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-          <li><a tabindex="-1" href="#">http://www.example.com/xx.php</a></li>
-          <li><a tabindex="-1" href="#">Regex:.+\.jpg$</a></li>
-          <li><a tabindex="-1" href="#">Regex:^https://.+\.gif$ </a></li>
-          <li><a tabindex="-1" href="#">Method:OPTIONS</a></li>
-          <li><a tabindex="-1" href="#">Header:Accept=html</a></li>
+          <li><a tabindex="-1" href="#" data-value="http://www.example.com/xxx/a.html">String</a></li>
+          <li><a tabindex="-1" href="#" data-value="^http:.*\.png$">Regexp</a></li>
+          <li><a tabindex="-1" href="#" data-value="POST">Method</a></li>
+          <li><a tabindex="-1" href="#" data-value="accept=html">Header</a></li>
           </li>
         </ul>
-
-
       </div>
+
       <div class="rule-edit-item">
         <span class="name">Replace:</span> 
-        <input type="text" maxlength="100" class="rule-input rule-replace" id="replaceInput"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
-
+        <input id="ruleReplaceType" type="text" maxlength="100" value="Redirect" readonly="true" class="rule-input rule-replace-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input id="ruleReplace" type="text" class="rule-replace rule-value" id="patternInput" maxlength="100">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-          <li><a tabindex="-1" href="#">Delay: 100ms</a></li>
-          <li><a tabindex="-1" href="#">Header: HeaderName=NewValue</a></li>
-          <li><a tabindex="-1" href="#">Cancel</a></li>
-          <li><a tabindex="-1" href="#">Redirect: http://www.example.com/a</a></li>
-          <li><a tabindex="-1" href="#">Path: file:///Users/welefen/foo/bar</a></li>
-          <li><a tabindex="-1" href="#">
-            File: file:///Users/welefen/foo/bar/a.html
-          </a>
+          <li><a tabindex="-1" href="#" data-value="100ms">Delay</a></li>
+          <li><a tabindex="-1" href="#" data-value="newHeader=newValue">Header</a></li>
+          <li><a tabindex="-1" href="#" data-value="">Cancel</a></li>
+          <li><a tabindex="-1" href="#" data-value="http://www.example.com/foo/bar/x.html">Redirect</a></li>
+          <li><a tabindex="-1" href="#" data-value="file:///Users/welefen/xxx/">Path</a></li>
+          <li><a tabindex="-1" href="#" data-value="file:///Users/welefen/a.js">File</a>
           </li>
         </ul>
-
       </div>
+
       <button class="btn btn-large btn-primary btn-save" type="button">Save</button>
     </fieldset>
   </div>
