@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Fiddler</title>
+<link href="../css/lib/bootstrap.css" type="text/css" rel="stylesheet" />
+<link href="../css/lib/fiddler.css" type="text/css"  rel="stylesheet"/>
+<link href="../css/page/options.css" type="text/css" rel="stylesheet"/>
+<script src="../js/lib/jquery.js"></script>
+<script src="../js/lib/when.js"></script>
+<script src="../js/lib/fiddler.js"></script>
+<script src="../js/lib/bootstrap.js"></script>
+<script src="../js/component/event.js"></script>
+<script src="../js/component/file.js"></script>
+<script src="../js/component/resource.js"></script>
+<script src="../js/component/rule.js"></script>
+<script src="../js/component/config.js"></script>
+<script src="../js/page/options.js"></script>
+</head>
+<body>
+  <div id="fiddler">
+<header id="navbar-example" class="navbar navbar-static">
+  <div class="navbar-inner">
+    <div class="container" style="width: auto;">
+      <a class="brand" href="#">Fiddler</a>
+      <ul class="nav" role="navigation">
+        <li class="dropdown">
+         <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Filter ( All ) <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li class="disabled"><a href="#">All</a></li>
+            <li><a href="#">Documents</a></li>
+            <li><a href="#">Stylesheets</a></li>
+            <li><a href="#">Scripts</a></li>
+            <li><a href="#">Images</a></li>
+            <li><a href="#">XHR</a></li>
+            <li><a href="#">Font</a></li>
+            <li><a href="#">Other</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Tools <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Clear</a></li>
+             <li role="presentation">
+              <a role="menuitem" tabindex="-1" href="#">
+                <input type="checkbox" name="diable-cache" class="disable-cache" /> 
+                Disable Cache
+              </a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">User Agent</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav pull-right">
+        <li id="fat-menu" class="dropdown">
+          <button class="btn btn-success btn-primary" data-toggle="popover" data-placement="bottom" title="" data-original-title="Popover on top" id="autoResponseBtn">Auto Response</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+
+<div id="requestList">
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th width="40">Type</th>
+      <th width="30">Status</th>
+      <th>Url</th>
+      <th width="300">Host</th>
+      <th width="100">Ip</th>
+      <th width="30">Method</th>
+      <th width="40">Size</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+</div>
+
+<div id="requestDetail">
+  <div style="background:#fafafa;position:relative;">
+    <a class="btn btn-mini" href="#" style="position:absolute;left:8px;top:8px;">
+      <i class="icon-remove"></i></a>
+  <ul class="nav nav-tabs" id="myTab" style="padding-left:50px;">
+    <li class="active"><a href="#home">Headers</a></li>
+    <li><a href="#profile">Preview</a></li>
+    <li><a href="#messages">Response</a></li>
+  </ul>
+</div>
+   
+  <div class="tab-content">
+    <div class="tab-pane active" id="home">...</div>
+    <div class="tab-pane" id="profile">...</div>
+    <div class="tab-pane" id="messages">...</div>
+    <div class="tab-pane" id="settings">...</div>
+  </div>
+
+ </div>
+
+ <div id="autoResponseList" class="popover bottom fade in">
+  <div class="arrow"></div>
+  <div class="hd">
+     <label><input type="checkbox" checked id="enableAutoResponse" /> Enable Auto Response</label>
+     <button class="btn btn-add">add</button>
+  </div>
+  <div class="rule-list">
+    <table class="table">
+      <thead>
+        <tr>
+          <th width="46">Enable</th>
+          <th width="203">If Request Matches...</th>
+          <th width="214">The Response With...</th>
+          <th width="33">Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rule-edit">
+    <fieldset>
+      <legend>Rule Editor</legend>
+      <div class="rule-edit-item">
+        <span class="name">Pattern:</span> 
+        <input type="text" class="rule-input rule-pattern" id="patternInput" maxlength="100"><a class="btn btn-select btn-select" href="#"><i class="icon-chevron-down"></i></a>
+
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+          <li><a tabindex="-1" href="#">http://www.example.com/xx.php</a></li>
+          <li><a tabindex="-1" href="#">Regex:.+\.jpg$</a></li>
+          <li><a tabindex="-1" href="#">Regex:^https://.+\.gif$ </a></li>
+          <li><a tabindex="-1" href="#">Method:OPTIONS</a></li>
+          <li><a tabindex="-1" href="#">Header:Accept=html</a></li>
+          </li>
+        </ul>
+
+
+      </div>
+      <div class="rule-edit-item">
+        <span class="name">Replace:</span> 
+        <input type="text" maxlength="100" class="rule-input rule-replace" id="replaceInput"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
+
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+          <li><a tabindex="-1" href="#">Delay: 100ms</a></li>
+          <li><a tabindex="-1" href="#">Header: HeaderName=NewValue</a></li>
+          <li><a tabindex="-1" href="#">Cancel</a></li>
+          <li><a tabindex="-1" href="#">Redirect: http://www.example.com/a</a></li>
+          <li><a tabindex="-1" href="#">Path: file:///Users/welefen/foo/bar</a></li>
+          <li><a tabindex="-1" href="#">
+            File: file:///Users/welefen/foo/bar/a.html
+          </a>
+          </li>
+        </ul>
+
+      </div>
+      <button class="btn btn-large btn-primary btn-save" type="button">Save</button>
+    </fieldset>
+  </div>
+
+ </div>
+
+</div>
+</body>
+</html>

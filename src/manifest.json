@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Fiddler",
+  "version": "1",
+  "description": "",
+  "background": {
+  	"page": "html/background.html"
+  },
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "homepage_url":"http://www.welefen.com/music-chrome-plugin-upgrade-to-2.html",
+  "permissions": [
+    "tabs",
+    "<all_urls>",
+    "webRequestBlocking", 
+    "webRequest"
+  ],
+  "icons": {
+    "128": "img/icon128.png",
+    "48": "img/icon48.png",
+    "16": "img/icon16.png"
+  },
+  "options_page":"html/options.html"
+}
