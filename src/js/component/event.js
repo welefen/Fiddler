@@ -14,7 +14,12 @@ var Fiddler_Event = function(){
            }, {urls:["http://*/*"]}, ["blocking", "requestBody"] 
         );
         chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
-            Fiddler_Rule.fireSome("onBeforeSendHeaders", details);
+            var result = Fiddler_Rule.fireMerge("onBeforeSendHeaders", details);
+            if (result) {
+                return {
+                    requestHeaders: result.requestHeaders
+                };
+            };
           }, {urls: ["http://*/*"]}, ["blocking", "requestHeaders"]
         );
         chrome.webRequest.onCompleted.addListener(function(details) {

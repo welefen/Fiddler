@@ -61,8 +61,24 @@ var Fiddler_Rule = function(){
             };
             return rule.pattern.toLowerCase() == method.toLowerCase();
         },
-        matchHeader: function(){
-
+        matchHeader: function(requestInfo, rule){
+            var pattern = (rule.pattern || "").split('=');
+            var hName = pattern.shift().toLowerCase();
+            var hValue = pattern.join('=');
+            var headers = requestInfo.requestHeaders || [];
+            return headers.some(function(item){
+                var name = item.name.toLowerCase();
+                var value = item.value;
+                if (name == hName) {
+                    if (hValue == value) {
+                        return true;
+                    };
+                    if (value.indexOf(hValue) == 0) {
+                        return true;
+                    };
+                };
+                return false;
+            })
         },
         /**
          * file replace
@@ -91,10 +107,12 @@ var Fiddler_Rule = function(){
          * @return {[type]}           [description]
          */
         addDirReplaceRule: function(rule){
+            var self = this;
             this.onBeforeRequest(function(data){
                 var url = data.data.url;
                 var encoding = Fiddler_Config.getEncoding();
-                if (Fiddler.match(url, urlPrefix)) {
+                if (self.match(data.data, rule)) {
+                    return false;
                     var suffix = url.substr(urlPrefix.length);
                     var file = Fiddler.pathAdd(filePath, suffix);
                     var content = Fiddler_File.getLocalFile(file, encoding);
@@ -129,10 +147,11 @@ var Fiddler_Rule = function(){
          * @param  {[type]} delayTime [description]
          * @return {[type]}           [description]
          */
-        addDelayRule: function(pattern, delayTime){
+        addDelayRule: function(rule){
+            var self = this;
             this.onBeforeRequest(function(data){
-                var url = data.data.url;
-                if (Fiddler.match(url, pattern)) {
+                if (self.match(data.data, rule)) {
+                    var delayTime = parseInt(rule.replace, 10) || 0;
                     Fiddler.delay(delayTime);
                     return false;
                 };
@@ -143,10 +162,10 @@ var Fiddler_Rule = function(){
          * cancel rule
          * @return {[type]} [description]
          */
-        addCancelRule: function(pattern){
+        addCancelRule: function(rule){
+            var self = this;
             this.onBeforeRequest(function(data){
-                var url = data.data.url;
-                if (Fiddler.match(url, pattern)) {
+                if (self.match(data.data, rule)) {
                     return {
                         cancel: true
                     }
@@ -154,8 +173,55 @@ var Fiddler_Rule = function(){
                 return false;
             })
         },
-        addHeaderRule: function(){
-
+        addHeaderRule: function(rule){
+            var self = this;
+            this.onBeforeSendHeaders(function(data){
+                if (self.match(data.data, rule)) {
+                    var item = {
+                        name: 'Author',
+                        value: "welefen"
+                    }
+                    data.data.requestHeaders.push(item)
+                    return data.data;  
+                };
+                return false;
+            })
+        },
+        parseHeader: function(string){
+            string = (string || "").split(";");
+            var headers = {};
+            string.forEach(function(item){
+                item = item.trim();
+                if (!item) {
+                    return false;
+                };
+                item = item.split('=');
+                var name = item[0].trim();
+                var value = item[1].trim();
+                if (!name) {
+                    return false;
+                };
+                headers[name] = value;
+            })
+            return headers;
+        },
+        headersToObj: function(headers){
+            headers = headers || [];
+            var result = {};
+            headers.forEach(function(item){
+                result[item.name] = item.value;
+            });
+            return result;
+        },
+        headersToArr: function(obj){
+            var headers = [];
+            for(var name in obj){
+                headers.push({
+                    name: name,
+                    value: obj[name]
+                });
+            }
+            return headers;
         },
         /**
          * resource listening

@@ -180,6 +180,23 @@ var Fiddler = function(){
                     };
                 });
                 return ret;
+            },
+            fireMerge: function(event, args){
+                args = args || {};
+                var msg = {
+                    data: args,
+                    type: event,
+                    target: this,
+                };
+                var _handlers = handlers[event] || [];
+                _handlers = _handlers.concat(handlers['*'] || []);
+                _handlers.forEach(function(o){
+                    var result = o(msg);
+                    if (result) {
+                        msg.data = result;
+                    };
+                });
+                return msg.data;
             }
         };
     };
