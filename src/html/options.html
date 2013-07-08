@@ -25,16 +25,16 @@
       <a class="brand" href="#">Fiddler</a>
       <ul class="nav" role="navigation">
         <li class="dropdown">
-         <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Filter ( All ) <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li class="disabled"><a href="#">All</a></li>
-            <li><a href="#">Documents</a></li>
-            <li><a href="#">Stylesheets</a></li>
-            <li><a href="#">Scripts</a></li>
-            <li><a href="#">Images</a></li>
-            <li><a href="#">XHR</a></li>
-            <li><a href="#">Font</a></li>
-            <li><a href="#">Other</a></li>
+          <a id="filterMenuTitle" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><span>Filter ( All )</span> <b class="caret"></b></a>
+          <ul class="dropdown-menu" id="filterMenu">
+            <li class="disabled"><a href="#" data-type="">All</a></li>
+            <li><a href="#" data-type="main_frame">Documents</a></li>
+            <li><a href="#" data-type="stylesheet">Stylesheets</a></li>
+            <li><a href="#" data-type="script">Scripts</a></li>
+            <li><a href="#" data-type="image">Images</a></li>
+            <li><a href="#" data-type="xmlhttprequest">XHR</a></li>
+            <li><a href="#" data-type="font">Font</a></li>
+            <li><a href="#" data-type="other">Other</a></li>
           </ul>
         </li>
         <li class="dropdown">

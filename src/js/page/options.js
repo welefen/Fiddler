@@ -19,8 +19,8 @@ $(function(){
             };
         })
         var html = [
-            '<tr data-id="'+data.requestId+'" data-pid="'+data.parentRequestId+'">',
-                '<td><img src="'+getTypeFile(data.type)+'">'+'</td>',
+            '<tr data-type="'+data.type+'" data-id="'+data.requestId+'" data-pid="'+data.parentRequestId+'">',
+                '<td>&nbsp;&nbsp;<img src="'+getTypeFile(data.type)+'">'+'</td>',
                 '<td>'+data.statusCode+'</td>',
                 '<td>'+Fiddler.truncate(urlDetail.path, 50)+'</td>',
                 '<td>'+urlDetail.host+'</td>',  
@@ -63,11 +63,12 @@ $(function(){
         Fiddler_Resource.on("onCompleted", function(detail){
             var data = detail.data;
             if (data.type == 'main_frame') {
-                hideFrames();
+                //hideFrames();
             };
             var html = getItemHtml(data);
             if (html) {
                 $(html).appendTo(table);
+                $('#requestList')[0].scrollTop = 1000000;
             };
         })
     }
@@ -114,7 +115,8 @@ $(function(){
                 };
                 $('#autoResponseList .rule-list tbody tr').removeClass('info');
                 setRuleEditEnable(true);
-                $('.rule-pattern').val('StringToMatch[6]').select();
+                $('#autoResponseList .rule-pattern').val('StringToMatch[6]').select();
+                $('#autoResponseList .rule-replace').val('');
             },
             '.btn-save': function(){
                 if ($(this).hasClass('disabled')) {
@@ -221,12 +223,40 @@ $(function(){
             saveRules();
         }
     }
+    function initFilter(){
+        Fiddler.bindEvent($('#filterMenu'), {
+            'li a': function(e){
+                e.preventDefault();
+                var type = $(this).data('type');
+                var html = $(this).html();
+                $('#filterMenuTitle span').html('Filter ( '+html+' )');
+                $('#filterMenu li').removeClass('disabled');
+                var li = $(this).parents('li');
+                li.addClass('disabled');
+                var list = $('#requestList tbody tr');
+                if (type == '') {
+                    list.show();
+                }else{
+                    list.each(function(){
+                        var $this = $(this);
+                        var trtype = $this.data('type');
+                        if (type == trtype) {
+                            $this.show();
+                        }else{
+                            $this.hide();
+                        }
+                    })
+                }
+            }
+        })
+    }
     function init(){
         Fiddler_Rule.resouceListening();
         Fiddler_Event.init();
         bindCompleteEvent();
         bindAutoResponseEvent();
         initData();
+        initFilter();
     }
     init();
 })
