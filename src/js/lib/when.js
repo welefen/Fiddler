@@ -242,11 +242,11 @@ define(function () {
         self = new Promise(then, inspect);
 
         // Call the provider resolver to seal the promise's fate
-        try {
+        //try {
             resolver(promiseResolve, promiseReject, promiseNotify);
-        } catch(e) {
-            promiseReject(e);
-        }
+        //} catch(e) {
+           // promiseReject(e);
+       // }
 
         // Return the promise
         return self;
@@ -341,7 +341,7 @@ define(function () {
 
         return promise(function(resolve, reject, notify) {
             enqueue(function() {
-                try {
+                //try {
                     // We must check and assimilate in the same tick, but not the
                     // current tick, careful only to access promiseOrValue.then once.
                     var untrustedThen = x.then;
@@ -353,10 +353,10 @@ define(function () {
                         resolve(fulfilled(x));
                     }
 
-                } catch(e) {
+                //} catch(e) {
                     // Something went wrong, reject
-                    reject(e);
-                }
+                //    reject(e);
+                //}
             });
         });
     }
@@ -369,12 +369,12 @@ define(function () {
      */
     function fulfilled(value) {
         var self = new Promise(function (onFulfilled) {
-            try {
+            //try {
                 return typeof onFulfilled == 'function'
                     ? coerce(onFulfilled(value)) : self;
-            } catch (e) {
-                return rejected(e);
-            }
+            //} catch (e) {
+             //   return rejected(e);
+            //}
         }, function() {
             return toFulfilledState(value);
         });
@@ -390,12 +390,12 @@ define(function () {
      */
     function rejected(reason) {
         var self = new Promise(function (_, onRejected) {
-            try {
+            //try {
                 return typeof onRejected == 'function'
                     ? coerce(onRejected(reason)) : self;
-            } catch (e) {
-                return rejected(e);
-            }
+            //} catch (e) {
+             //   return rejected(e);
+            //}
         }, function() {
             return toRejectedState(reason);
         });
@@ -411,12 +411,12 @@ define(function () {
      */
     function progressing(update) {
         var self = new Promise(function (_, __, onProgress) {
-            try {
+            //try {
                 return typeof onProgress == 'function'
                     ? progressing(onProgress(update)) : self;
-            } catch (e) {
-                return progressing(e);
-            }
+            //} catch (e) {
+            //    return progressing(e);
+            //}
         });
 
         return self;
@@ -832,6 +832,6 @@ define(function () {
     return when;
 });
 })(
-    typeof define === 'function' && define.amd ? define : function (factory) { window.exports = factory(); },
+    typeof define === 'function' && define.amd ? define : function (factory) { window.when = factory(); },
     this
 );

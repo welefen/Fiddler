@@ -6,7 +6,7 @@
   "background": {
   	"page": "html/background.html"
   },
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "homepage_url":"http://www.welefen.com/music-chrome-plugin-upgrade-to-2.html",
   "permissions": [
     "tabs",

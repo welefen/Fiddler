@@ -3,7 +3,7 @@ var Fiddler_Config = function(){
     var config = {
         encoding: "utf-8",
         enable_auto_response: true,
-
+        disable_cache: false,
         rules: []
     };
     var _key = "Fiddler";

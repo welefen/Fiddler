@@ -111,10 +111,10 @@ var Fiddler_Rule = function(){
             this.onBeforeRequest(function(data){
                 var url = data.data.url;
                 var encoding = Fiddler_Config.getEncoding();
-                if (self.match(data.data, rule)) {
-                    return false;
-                    var suffix = url.substr(urlPrefix.length);
-                    var file = Fiddler.pathAdd(filePath, suffix);
+                var pos = url.indexOf(rule.pattern);
+                if (pos === 0) {
+                    var suffix = url.substr(rule.pattern.length);
+                    var file = Fiddler.pathAdd(rule.replace, suffix);
                     var content = Fiddler_File.getLocalFile(file, encoding);
                     return {
                         redirectUrl: content
@@ -149,7 +149,7 @@ var Fiddler_Rule = function(){
          */
         addDelayRule: function(rule){
             var self = this;
-            this.onBeforeRequest(function(data){
+            this.onBeforeSendHeaders(function(data){
                 if (self.match(data.data, rule)) {
                     var delayTime = parseInt(rule.replace, 10) || 0;
                     Fiddler.delay(delayTime);
@@ -164,24 +164,24 @@ var Fiddler_Rule = function(){
          */
         addCancelRule: function(rule){
             var self = this;
-            this.onBeforeRequest(function(data){
+            this.onBeforeSendHeaders(function(data){
+                console.log(data.data);
                 if (self.match(data.data, rule)) {
-                    return {
-                        cancel: true
-                    }
+                    data.data.cancel = true;
                 };
-                return false;
+                return data.data;
             })
         },
         addHeaderRule: function(rule){
             var self = this;
             this.onBeforeSendHeaders(function(data){
                 if (self.match(data.data, rule)) {
-                    var item = {
-                        name: 'Author',
-                        value: "welefen"
-                    }
-                    data.data.requestHeaders.push(item)
+                    var headers = data.data.requestHeaders;
+                    var obj = self.headersToObj(headers);
+                    var newH = self.parseHeader(rule.replace);
+                    obj = Fiddler.mix(obj, newH, true);
+                    headers = self.headersToArr(obj);
+                    data.data.requestHeaders = headers;
                     return data.data;  
                 };
                 return false;
@@ -196,7 +196,11 @@ var Fiddler_Rule = function(){
                     return false;
                 };
                 item = item.split('=');
-                var name = item[0].trim();
+                var name = item[0].trim().toLowerCase();
+                name = name.substr(0, 1).toUpperCase() + name.substr(1);
+                name = name.replace(/\-(\w)/ig, function(a, b) {
+                    return '-' + b.toUpperCase();
+                });
                 var value = item[1].trim();
                 if (!name) {
                     return false;
@@ -240,6 +244,31 @@ var Fiddler_Rule = function(){
                     return false;
                 })
             })
+        },
+        disableCacheRule: function(){
+            var self = this;
+            var list = ["Cache-Control", "Pragma", "If-Modified-Since", "If-None-Match"];
+            var listData = ["no-cache", "no-cache", "", ""];
+            this.onBeforeSendHeaders(function(data){
+                var headers = data.data.requestHeaders;
+                var obj = self.headersToObj(headers);
+                var result = {};
+                for(var name in obj){
+                    if (list.indexOf(name) > -1) {
+                        continue;
+                    };
+                    result[name] = obj[name];
+                }
+                list.forEach(function(item, i){
+                    result[item] = listData[i];
+                })
+                headers = self.headersToArr(result);
+                data.data.requestHeaders = headers;
+                return data.data;
+            })
+        },
+        userAgentRule: function(agent){
+
         },
         isRule: function(info){
             return info && info.pattern && info.type && info.args;

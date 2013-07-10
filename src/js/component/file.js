@@ -26,8 +26,26 @@ var Fiddler_File = function(){
          * get remote file content
          * @return {[type]} [description]
          */
-        getRemoteFile: function(url, headers){
-
+        getRemoteFile: function(requestId){
+            var detail = Fiddler_Resource.getItem(requestId);
+            var url = detail.url;
+            if (url.indexOf('?') == -1) {
+                url += '?fiddler=' + requestId;
+            }else{
+                url += '&fiddler=' + requestId;
+            }
+            //var headers = Fiddler_Rule.headersToObj(detail.requestHeaders);
+            var method = detail.method;
+            var deferred = when.defer();
+            $.ajax({
+                url: url,
+                method: method,
+                complete: function(data){
+                    data = data.responseText || data.responseXML;
+                    deferred.resolve(data);
+                }
+            })
+            return deferred.promise;
         }
     }
 }();

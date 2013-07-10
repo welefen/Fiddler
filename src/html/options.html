@@ -38,23 +38,38 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Tools <b class="caret"></b></a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Clear</a></li>
-             <li role="presentation">
+          <a href="#" id="tools" role="button" class="dropdown-toggle" data-toggle="dropdown">Tools <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" id="toolsMenu" aria-labelledby="tools">
+            <li role="presentation">
+              <a role="menuitem" tabindex="-1" href="#" class="clear">Clear</a>
+            </li>
+            <li class="divider"></li>
+            <li role="presentation">
               <a role="menuitem" tabindex="-1" href="#">
-                <input type="checkbox" name="diable-cache" class="disable-cache" /> 
-                Disable Cache
-              </a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">User Agent</a></li>
+                <label><input type="checkbox" name="diable-cache" id="disabledCacheInput" class="disable-cache" /> 
+                Disable Cache</label>
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li role="presentation" class="dropdown-submenu">
+              <a role="menuitem" tabindex="-1" href="#">User Agent</a>
+              <ul class="dropdown-menu">
+                <li><a tabindex="-1" href="#">Second level link</a></li>
+                <li><a tabindex="-1" href="#">Second level link</a></li>
+                <li><a tabindex="-1" href="#">Second level link</a></li>
+                <li><a tabindex="-1" href="#">Second level link</a></li>
+                <li><a tabindex="-1" href="#">Second level link</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
           <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/welefen/Fiddler" target="_blank">Fiddler Help</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/welefen/Fiddler" target="_blank">@Github</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/welefen/Fiddler/issues" target="_blank">Feedback</a></li>
             <li role="presentation" class="divider"></li>
             <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About</a></li>
           </ul>
@@ -76,10 +91,10 @@
     <tr>
       <th width="40">Type</th>
       <th width="30">Status</th>
+      <th width="30">Method</th>
       <th>Url</th>
       <th width="300">Host</th>
       <th width="100">Ip</th>
-      <th width="30">Method</th>
       <th width="40">Size</th>
     </tr>
   </thead>
@@ -90,20 +105,21 @@
 </div>
 
 <div id="requestDetail">
-  <div style="background:#fefefe;position:relative;">
-    <i class="icon-remove"></i>
+  <div class="hd">
+    <i class="icon-remove" class="close"></i>
     <ul class="nav nav-tabs" id="myTab" style="padding-left:36px;">
-      <li class="active"><a href="#home">Headers</a></li>
-      <li><a href="#profile">Preview</a></li>
-      <li><a href="#messages">Response</a></li>
+      <li class="active" data-type="headers"><a href="#headers">Headers</a></li>
+      <li data-type="preview"><a href="#preview" >Preview</a></li>
+      <li data-type="response"><a href="#response" >Response</a></li>
+      <li data-type="beautify"><a href="#beautify" >Beautify</a></li>
     </ul>
 </div>
    
   <div class="tab-content">
-    <div class="tab-pane active" id="home">...</div>
-    <div class="tab-pane" id="profile">...</div>
-    <div class="tab-pane" id="messages">...</div>
-    <div class="tab-pane" id="settings">...</div>
+    <div class="tab-pane active" id="tab-headers"></div>
+    <div class="tab-pane" id="tab-preview"></div>
+    <div class="tab-pane" id="tab-response"></div>
+    <div class="tab-pane" id="tab-beautify"></div>
   </div>
 
  </div>
@@ -136,28 +152,28 @@
 
       <div class="rule-edit-item">
         <span class="name">Pattern:</span> 
-        <input id="rulePatternType" type="text" value="String" readonly="true" class="rule-input rule-pattern-type" maxlength="100"><a class="btn btn-select btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input id="rulePatternType" type="text" value="String" readonly="true" class="rule-input rule-pattern-type" maxlength="100"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
         <input type="text" class="rule-pattern rule-value" id="rulePattern" maxlength="100">
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-          <li><a tabindex="-1" href="#" data-value="http://www.example.com/xxx/a.html">String</a></li>
-          <li><a tabindex="-1" href="#" data-value="^http:.*\.png$">Regexp</a></li>
-          <li><a tabindex="-1" href="#" data-value="POST">Method</a></li>
-          <li><a tabindex="-1" href="#" data-value="accept=text/html">Header</a></li>
+        <ul class="dropdown-menu" id="patternMenu" role="menu" aria-labelledby="dropdownMenu">
+          <li><a tabindex="-1" href="#" data-type="string" data-value="http://www.example.com/xxx/a.html">String</a></li>
+          <li><a tabindex="-1" href="#" data-type="regexp" data-value="^http:.*\.png$">Regexp</a></li>
+          <li><a tabindex="-1" href="#" data-type="method" data-value="POST">Method</a></li>
+          <li><a tabindex="-1" href="#" data-type="header" data-value="accept=text/html">Header</a></li>
           </li>
         </ul>
       </div>
 
       <div class="rule-edit-item">
         <span class="name">Replace:</span> 
-        <input id="ruleReplaceType" type="text" maxlength="100" value="Redirect" readonly="true" class="rule-input rule-replace-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input id="ruleReplaceType" type="text" maxlength="100" value="File" readonly="true" class="rule-input rule-replace-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
         <input id="ruleReplace" type="text" class="rule-replace rule-value" id="patternInput" maxlength="100">
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-          <li><a tabindex="-1" href="#" data-value="100ms">Delay</a></li>
-          <li><a tabindex="-1" href="#" data-value="newHeader=newValue">Header</a></li>
-          <li><a tabindex="-1" href="#" data-value="">Cancel</a></li>
-          <li><a tabindex="-1" href="#" data-value="http://www.example.com/foo/bar/x.html">Redirect</a></li>
-          <li><a tabindex="-1" href="#" data-value="file:///Users/welefen/xxx/">Path</a></li>
-          <li><a tabindex="-1" href="#" data-value="file:///Users/welefen/a.js">File</a>
+        <ul class="dropdown-menu" id="replaceMenu" role="menu" aria-labelledby="dropdownMenu">
+          <li><a tabindex="-1" href="#" data-type="delay" data-value="100ms">Delay</a></li>
+          <li><a tabindex="-1" href="#" data-type="header" data-value="newHeader=newValue">Header</a></li>
+          <li><a tabindex="-1" href="#" data-type="cancel" data-value="">Cancel</a></li>
+          <li><a tabindex="-1" href="#" data-type="redirect" data-value="http://www.example.com/foo/bar/x.html">Redirect</a></li>
+          <li><a tabindex="-1" href="#" data-type="path" data-value="file:///Users/welefen/xxx/">Path</a></li>
+          <li><a tabindex="-1" href="#" data-type="file" data-value="file:///Users/welefen/a.js">File</a>
           </li>
         </ul>
       </div>
@@ -169,5 +185,79 @@
  </div>
 
 </div>
+
+
+<script id="requestItemTpl" type="text/html">
+<tr class=" {$lowerMethod} {$err}" style="{$display}" data-type="{$type}" data-id="{$requestId}" data-pid="{$parentRequestId}">
+    <td>
+        &nbsp;&nbsp;
+        <img src="{$img}">
+    </td>
+    <td>{$statusCode}</td>
+    <td>{$method}</td>
+    <td>
+        {$shortPath}
+        <a class="icon-url" title="open on new tab" href="{$url}" target="_blank">
+            <i class="icon-share"></i>
+        </a>
+    </td>
+    <td>{$host}</td>
+    <td>{$ip}</td>
+    <td>{$humanSize}</td>
+</tr>
+</script>
+
+<script id="ruleItemTpl" type="text/html">
+<tr>
+    <td><input type="checkbox" {$checked} name="ruleCheck" class="rule-check" /></td>
+    <td><p class="pattern">{$pattern}</p></td>
+    <td><p class="replace">{$replace}</p></td>
+    <td><i class="icon icon-edit"></i> <i class="icon icon-remove"></i></td>
+</tr>
+</script>
+
+<script id="headersTpl" type="text/html">
+<div class="content">
+  <div class="item"><b>Request URL:</b> {$url}</div>
+  <div class="item"><b>Request Method:</b> {$method}</div>
+  <div class="item"><b>Status Code:</b> <span {if ($statusCode >= 400)}style="color:red"{/if}>{$statusCode}</span></div>
+  {if(opts.queryUrl)}
+  <b>Query Url:</b>
+  <div style="padding-left:10px;">
+    {for(var name in opts.queryUrl)}
+      <div class="item"><b>{name}:</b> {opts.queryUrl[name]}</div>
+    {/for}
+  </div>
+  {/if}
+  <b>Request Headers:</b>
+  <div style="padding-left:10px;">
+    {for(var i=0;i<opts.requestHeaders.length;i++)}
+      <div class="item"><b>{opts.requestHeaders[i].name}:</b> {opts.requestHeaders[i].value}</div>
+    {/for}
+  </div>
+  <b>Response Headers:</b>
+  <div style="padding-left:10px;">
+    {for(var i=0;i<opts.responseHeaders.length;i++)}
+      <div class="item"><b>{opts.responseHeaders[i].name}:</b> {opts.responseHeaders[i].value}</div>
+    {/for}
+  </div>
+</div>
+</script>
+
+<script id="imagePreviewTpl" type="text/html">
+<div class="content" >
+<div style="text-align: center">
+  <img src="{$url}" />
+  {$filename}
+</div>
+<table style="margin-top:20px;">
+  <tr><td align="right" width="40%" style="padding-right:10px;">Dimensions</td><td  width="60%">{$width} x {$height}</td></tr>
+  <tr><td align="right" style="padding-right:10px;">File size</td><td>{$filesize}</td></tr>
+  <tr><td align="right" style="padding-right:10px;">URL</td><td><a href="{$url}" target="_blank">{$url}</a></td></tr>
+</table>
+</div>
+</script>
+
+
 </body>
 </html>

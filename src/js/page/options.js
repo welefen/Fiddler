@@ -6,45 +6,25 @@ $(function(){
      * @return {[type]}      [description]
      */
     function getItemHtml(data){
-        var urlDetail = Fiddler.getUrlDetail(data.url);
-        if (["http:", "https:"].indexOf(urlDetail.protocol) == -1) {
-            return false;
-        };
-        var responseHeaders = data.responseHeaders || [];
-        var size = 0;
-        responseHeaders.some(function(item){
-            if (item.name == 'Content-Length') {
-                size = item.value;
-                return true;
-            };
-        });
         var currentType = $('#filterMenu li.disabled a').data('type');
-        var display = (currentType == data.type || currentType == '') ? "" : 'display:none';
-        var cls = data.statusCode >= 400 ? "err" : "";
-        var html = [
-            '<tr class="'+cls+'" style="'+display+'" data-type="'+data.type+'" data-id="'+data.requestId+'" data-pid="'+data.parentRequestId+'">',
-                '<td>&nbsp;&nbsp;<img src="'+getTypeFile(data.type)+'">'+'</td>',
-                '<td>'+data.statusCode+'</td>',
-                '<td>'+Fiddler.truncate(urlDetail.path, 50)+' <a class="icon-url" title="open on new tab" href="'+data.url+'" target="_blank"><i class="icon-share"></i></a></td>',
-                '<td>'+urlDetail.host+'</td>',  
-                '<td>'+data.ip+'</td>',
-                '<td>'+data.method+'</td>',
-                '<td>'+(Fiddler.getHumanSize(size) || '-')+'</td>',
-            '</tr>'
-        ].join('');
+        data.display = (currentType == data.type || currentType == '') ? "" : 'display:none';
+        data.err = data.statusCode >= 400 ? "err" : "";
+        data.img = getTypeFile(data.type);
+        data.lowerMethod = data.method.toLowerCase();
+        data.shortPath = Fiddler.truncate(data.path, 50);
+        data.humanSize = Fiddler.getHumanSize(data.size) || '-';
+        var html = Fiddler.tmpl($('#requestItemTpl').html(), data).trim();
         return html;
     }
     function getItemRuleHtml(data){
         var pattern = data.patternType + ": " + data.pattern;
         var replace = data.replaceType + ": " + data.replace;
-        var html = [
-            '<tr>',
-                '<td><input type="checkbox" name="ruleCheck" '+(data.enable ? "checked" : "")+' class="rule-check" /></td>',
-                '<td><p class="pattern">'+pattern+'</p></td>',
-                '<td><p class="replace">'+replace+'</p></td>',
-                '<td><i class="icon icon-edit"></i> <i class="icon icon-remove"></i></td>',
-            '</tr>'
-        ].join('');
+        var html = $('#ruleItemTpl').html().trim();
+        html = Fiddler.tmpl(html, {
+            pattern: pattern,
+            replace: replace,
+            checked: data.enable ? "checked" : ""
+        });
         return html;
     }
     function getTypeFile(type){
@@ -75,14 +55,116 @@ $(function(){
         })
     }
     function bindRequestEvent(){
+        var currentEl = null;
+        var detaultTab = 'headers';
+        var cbs = {
+            "headers" : function(requestId){
+                var detail = Fiddler_Resource.getItem(requestId);
+                var queryUrl = Fiddler.queryUrl(detail.url);
+                var flag = false;
+                for(var name in queryUrl){
+                    flag = true;
+                    if (queryUrl[name] && queryUrl[name].join) {
+                        queryUrl[name] = "[" + queryUrl[name].join(", ") + "]";
+                    };
+                };
+                if (flag) {
+                    detail.queryUrl = queryUrl;
+                };
+                var html = Fiddler.tmpl($('#headersTpl').html(), detail);
+                $('#tab-headers').html(html)
+            },
+            "preview": function(requestId){
+                var detail = Fiddler_Resource.getItem(requestId);
+                var type = detail.type;
+                if (type == 'image') {
+                    var filename = detail.url.match(/[^\/]+$/)[0];
+                    var html = Fiddler.tmpl($('#imagePreviewTpl').html(), {
+                        url: detail.url,
+                        filename: filename
+                    });
+                    $('#tab-preview').html(html)
+                }else if(type == 'script'){
+                    Fiddler_Resource.getContent(requestId).then(function(content){
+                        alert(content)
+                    })
+                }
+            },
+            "response": function(requestId){
+                Fiddler_Resource.getContent(requestId).then(function(content){
+                    content = Fiddler.encode4Html(content);
+                    $('#tab-response').html(content)
+                })
+            },
+            "beautify": function(requestId){
+
+            }
+        }
+        var showTypeList = {
+            "image": ["headers", "preview"],
+            "script": ["headers", "preview", "response", "beautify"],
+            "stylesheet": ["headers", "preview", "response", "beautify"],
+            "main_frame": ["headers", "preview", "response", "beautify"],
+            "sub_frame": ["headers", "preview", "response", "beautify"],
+            "xmlhttprequest": ["headers", "response"]
+        };
         Fiddler.bindEvent($('#requestList'), {
             'tbody tr': function(){
-                $('#requestDetail').show();
+                currentEl && currentEl.removeClass('info');
+                var $this = $(this).addClass('info');
+                currentEl = $this;
+                var detailEl = $('#requestDetail');
+                if (!detailEl.hasClass('open')) {
+                    detailEl.addClass('open');
+                };
+                detailEl.find('.nav-tabs li').removeClass('active').hide();
+                detailEl.find('.nav-tabs li[data-type="'+detaultTab+'"]').addClass('active').show();
+                ["headers", "preview", "response", "beautify"].forEach(function(item){
+                    var el = $('#tab-'+item);
+                    el.html('').removeClass('active');
+                });
+                var requestId = currentEl.attr('data-id');
+                var detail = Fiddler_Resource.getItem(requestId);
+                var showTypes = showTypeList[detail.type] || [];
+                showTypes.forEach(function(item){
+                    detailEl.find('.nav-tabs li[data-type="'+item+'"]').show();
+                })
+                var el = $('#tab-' + detaultTab).addClass('active').show();
+                if (!el.html()) {
+                    cbs[detaultTab] && cbs[detaultTab](requestId);
+                };
             },
             'tbody tr a': function(e){
                 e.stopPropagation();
             }
+        });
+        Fiddler.bindEvent($('#requestDetail'), {
+            'i.icon-remove': function(){
+                currentEl && currentEl.removeClass('info');
+                $('#requestDetail').removeClass('open')
+            },
+            '.nav-tabs li a': function(e){
+                e.preventDefault();
+                var li = $(this).parents('li');
+                if (li.hasClass('active')) {
+                    return true;
+                };
+                $('#requestDetail .nav-tabs li.active').removeClass('active');
+                li.addClass('active');
+                $('#requestDetail .tab-content .active').removeClass('active').hide();;
+                var type = li.attr('data-type');
+                var el = $('#tab-' + type).addClass('active').show();
+                if (!el.html()) {
+                    cbs[type] && cbs[type](currentEl.attr('data-id'));
+                };
+            }
         })
+    }
+    var hideTypes = {
+        "string": [],
+        "regexp": ["path"],
+        "method": ["path"],
+        "header": ["file", "path", "redirect"]
     }
     /**
      * auto response event
@@ -102,6 +184,22 @@ $(function(){
                 }else{
                     menu.slideUp();
                 }
+            },
+            '#patternMenu li a': function(e){
+                e.preventDefault();
+                var type = $(this).attr('data-type');
+                var hides = hideTypes[type] || [];
+                var replaceA = $('#replaceMenu li a')
+                replaceA.show();
+                hides.forEach(function(item){
+                    $('#replaceMenu li a[data-type="'+item+'"]').hide();
+                });
+                replaceA.each(function(){
+                    var $this = $(this);
+                    if ($this.css('display') != 'none') {
+                        $('#ruleReplaceType').val($this.html());
+                    };
+                })
             },
             '.dropdown-menu li a': function(e){
                 e.preventDefault();
@@ -171,9 +269,20 @@ $(function(){
                 tr.remove();
                 saveRules();
             }
+        });
+        $(document.body).click(function(e){
+            var target = e.target;
+            $('#replaceMenu,#patternMenu').each(function(){
+                var item = $(this).parents('.rule-edit-item');
+                if ($.contains(item[0], target)) {
+                    return true;
+                }else{
+                    $(this).slideUp();
+                }
+            });
         })
         $('#autoResponseBtn').click(function(){
-            $('#autoResponseList').toggle();  
+            $('#autoResponseList').toggleClass('open');  
         });
         $('#enableAutoResponse').click(function(){
             var checked = !!this.checked;
@@ -215,6 +324,10 @@ $(function(){
         });
         var enable = $('#enableAutoResponse')[0].checked;
         Fiddler_Rule.saveRules(rules, enable);
+        var checked = $('#disabledCacheInput')[0].checked;
+        if (checked) {
+            Fiddler_Rule.disableCacheRule();
+        };
     }
     function initData(){
         Fiddler_Config.init();
@@ -225,6 +338,10 @@ $(function(){
             html.attr('data-info', JSON.stringify(item));
             html.appendTo(parent);
         });
+        var disableCache = Fiddler_Config.getConfig("disable_cache");
+        if (disableCache) {
+            $('#disabledCacheInput')[0].checked = true;
+        };
         var enable = Fiddler_Config.getConfig("enable_auto_response");
         if (!enable) {
             $('#enableAutoResponse')[0].checked = false;
@@ -233,6 +350,24 @@ $(function(){
         }else{
             saveRules();
         }
+    }
+    function clearRequest(){
+        $('#requestList tbody').html('');
+        $('#requestDetail').hide();
+        Fiddler_Resource.clearResource();
+    }
+    function initTools(){
+        Fiddler.bindEvent($('#toolsMenu'), {
+            'a.clear': function(e){
+                e.preventDefault();
+                clearRequest();
+            },
+            'input.disable-cache': function(e){
+                var checked = this.checked;
+                Fiddler_Config.setConfig("disable_cache", checked);
+                saveRules();
+            }
+        })
     }
     function initFilter(){
         Fiddler.bindEvent($('#filterMenu'), {
@@ -269,6 +404,7 @@ $(function(){
         bindAutoResponseEvent();
         initData();
         initFilter();
+        initTools();
     }
     init();
 })

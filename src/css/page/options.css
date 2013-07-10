@@ -23,7 +23,7 @@ header.navbar{
 #requestList tbody tr.err{
     color: red;
 }
-#requestList tbody tr:hover a.icon-url{
+#requestList tbody tr.get:hover a.icon-url{
     display: inline;
 }
 .disable-cache{
@@ -32,15 +32,21 @@ header.navbar{
 }
 #requestDetail{
     position: fixed;
-    display: none;
+    display: block;
     top: 50px;
-    right: 2px;
+    right: -600px;
     width: 600px;
     bottom: 0;
     background: #fff;
     border-left:1px solid #dddddd;
     border-top-right-radius: 4px;
     -webkit-box-shadow: 0 0 5px 0 #eee;
+    opacity: 0;
+    -webkit-transition: all 0.3s linear;
+}
+#requestDetail.open{
+    right: 2px;
+    opacity: 1;
 }
 #requestDetail .icon-remove{
     position: absolute;
@@ -48,10 +54,50 @@ header.navbar{
     left: 10px;
     cursor: pointer;
 }
+#requestDetail .hd{
+    background:#fefefe;
+    position:relative;
+    height: 38px;
+    overflow: hidden;
+}
+#requestDetail .tab-content{
+    overflow: auto;
+    position: absolute;
+    top: 38px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+#tab-headers, #tab-preview,#tab-response,#tab-beautify{
+    padding: 10px 20px;
+    width: 550px;
+    word-wrap: break-word;
+}
+#tab-headers .content .item{
+    width: 550px;
+    word-wrap: break-word;
+}
+#tab-headers .content .item b{
+    color: #666;
+    font-size: 13px;
+}
+
+#requestDetail .tab-content .tab-pane{
+    display: none;
+}
+#requestDetail .tab-content .tab-pane.active{
+    display: block;
+}
+#tab-preview img{
+    display: block;
+    margin: auto;
+}
+
+
+
 #autoResponseList{
     position: fixed;
     top: 40px;
-    display: none;
     right: 20px;
     width: 560px;
     bottom: 20px;
@@ -60,6 +106,15 @@ header.navbar{
     left: auto;
     padding: 10px;
     max-width: 600px;
+    display: block;;
+    -webkit-transform: scale(0);
+    opacity: 0;
+    -webkit-transition: all 0.3s cubic-bezier(.4,.83,.32,1.33);
+    -webkit-transform-origin: right top;
+}
+#autoResponseList.open{
+    opacity: 1;
+    -webkit-transform: scale(1);
 }
 #autoResponseList .arrow{
     left: auto;
@@ -162,3 +217,4 @@ header.navbar{
     z-index: 100;
     opacity: 0;
 }
+

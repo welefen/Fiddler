@@ -9,6 +9,9 @@ var Fiddler_Resource = function(){
 
     var parentRequestId = 0;
     Fiddler.mix(resource, {
+        clearResource: function(){
+            _request = {};
+        },
         add: function(data, type){
             var requestId = data.requestId;
             data[type + "Time"] = data.timeStamp;
@@ -28,6 +31,17 @@ var Fiddler_Resource = function(){
                 }else{
                     _request[requestId].parentRequestId = parentRequestId;
                 }
+                //content-size
+                _request[requestId].size = 0;
+                var responseHeaders = _request[requestId].responseHeaders || [];
+                responseHeaders.some(function(item){
+                    if (item.name == 'Content-Length') {
+                        _request[requestId].size = item.value;
+                        return true;
+                    };
+                });
+                var urlInfo = Fiddler.getUrlDetail(data.url);
+                Fiddler.mix(_request[requestId], urlInfo, true);
                 this.fire("onCompleted", _request[requestId]);
             };
         },
@@ -36,6 +50,38 @@ var Fiddler_Resource = function(){
         },
         getResoure: function(){
             return _request;
+        },
+        getContent: function(requestId){
+            var deferred = when.defer();
+            var detail = _request[requestId];
+            if (detail.content) {
+                return deferred.resolve(detail.content);
+            }else{
+                Fiddler_File.getRemoteFile(requestId).then(function(data){
+                    _request[requestId].content = data;
+                    deferred.resolve(data);
+                })
+            }
+            return deferred.promise;
+        },
+        getSize: function(requestId){
+            var deferred = when.defer();
+            var detail = _request[requestId];
+            if (detail.size) {
+                return deferred.resolve(detail.size);
+            }else{
+                if (detail.content) {
+                    _request[requestId].size = detail.content.length;
+                    return deferred.resolve(_request[requestId].size);
+                };
+                var self = this;
+                this.getContent(requestId).then(function(){
+                    return self.getSize(requestId);
+                }).then(function(size){
+                    deferred.resolve(size);
+                })
+            }
+            return deferred.promise;
         }
     })
     return resource;
