@@ -86,7 +86,7 @@ $(function(){
                     $('#tab-preview').html(html)
                 }else if(type == 'script'){
                     Fiddler_Resource.getContent(requestId).then(function(content){
-                        alert(content)
+                        //alert(content)
                     })
                 }
             },
@@ -291,8 +291,23 @@ $(function(){
             setRuleListEnable(checked);
             $('#autoResponseList button.btn-add')[checked ? "removeClass" : "addClass"]("disabled");
         });
-
     }
+    var userAgents = {
+        "firefox-windows": "",
+        "firefox-mac": "",
+        "chrome-windows": "",
+        "chrome-mac": "",
+        "chrome-mobile": "",
+        "chrome-tablet": "",
+        "iphone-ios5": "",
+        "ipad-ios5": "",
+        "ie10": "",
+        "ie9": "",
+        "ie8": "",
+        "ie7": "",
+        "ie6": ""
+    };
+    
     function setRuleEditEnable(enable){
         var ruleEdit = $('#autoResponseList .rule-edit');
         var input = ruleEdit.find('.rule-input,.rule-value');

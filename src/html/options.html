@@ -54,11 +54,22 @@
             <li role="presentation" class="dropdown-submenu">
               <a role="menuitem" tabindex="-1" href="#">User Agent</a>
               <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="#">Second level link</a></li>
-                <li><a tabindex="-1" href="#">Second level link</a></li>
-                <li><a tabindex="-1" href="#">Second level link</a></li>
-                <li><a tabindex="-1" href="#">Second level link</a></li>
-                <li><a tabindex="-1" href="#">Second level link</a></li>
+                <li class="disabled"><a tabindex="-1" href="#" data-type="default">Default</a></li>
+                <li class="divider"></li>
+                <li><a tabindex="-1" href="#" data-type="firefox-windows">Firefox Windows</a></li>
+                <li><a tabindex="-1" href="#" data-type="firefox-mac">Firefox Mac</a></li>
+                <li><a tabindex="-1" href="#" data-type="chrome-windows">Chrome Windows</a></li>
+                <li><a tabindex="-1" href="#" data-type="chrome-mac">Chrome Mac</a></li>
+                <li><a tabindex="-1" href="#" data-type="chrome-mobile">Chrome Mobile</a></li>
+                <li><a tabindex="-1" href="#" data-type="chrome-tablet">Chrome Tablet</a></li>
+                <li><a tabindex="-1" href="#" data-type="iphone-ios5">iPhone iOS 5</a></li>
+                <li><a tabindex="-1" href="#" data-type="ipad-ios5">iPad iOS 5</a></li>
+                <li><a tabindex="-1" href="#" data-type="ie9">Internet Explorer 9</a></li>
+                <li><a tabindex="-1" href="#" data-type="ie8">Internet Explorer 8</a></li>
+                <li><a tabindex="-1" href="#" data-type="ie7">Internet Explorer 7</a></li>
+                <li><a tabindex="-1" href="#" data-type="ie6">Internet Explorer 6</a></li>
+                <li class="divider"></li>
+                <li><a tabindex="-1" href="#" data-type="other">Other</a></li>
               </ul>
             </li>
           </ul>
@@ -71,7 +82,10 @@
             <li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/welefen/Fiddler" target="_blank">@Github</a></li>
             <li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/welefen/Fiddler/issues" target="_blank">Feedback</a></li>
             <li role="presentation" class="divider"></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About</a></li>
+            <li role="presentation">
+              <a role="menuitem" data-target="#aboutModal" data-toggle="modal" tabindex="-1" href="#">About
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -183,7 +197,26 @@
   </div>
 
  </div>
+</div>
 
+<div id="aboutModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">About</h3>
+  </div>
+  <div class="modal-body">
+    <p>Fiddler v1.0 - by <a href="http://www.welefen.com/about" target="_blank">welefen</a></p>
+    <p>Thanks For these Apps: </p>
+    <ul>
+        <li><a href="http://twitter.github.io/bootstrap/index.html">Bootstrap</a></li>
+        <li><a href="http://jquery.com/" target="_blank">jQuery</a></li>
+        <li><a href="http://qwrap.com/" target="_blank">Qwrap</a></li>
+        <li><a href="https://github.com/cujojs/when" target="_blank">When.js</a></li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
 </div>
 
 

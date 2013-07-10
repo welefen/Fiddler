@@ -4,6 +4,15 @@
  */
 var Fiddler = function(){
     var Fiddler = {};
+    Fiddler.isJson = function(string){
+        try{
+            JSON.parse(string);
+            return true;
+        }catch(e){
+            return false;
+        }
+        return false;
+    }
     Fiddler.isJsonp = function(string){
         string = string.trim();
         var pattern = /^[\w\.]+\s*\(.*\);?$/;
