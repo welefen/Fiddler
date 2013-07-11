@@ -55,6 +55,12 @@ var Fiddler = function(){
         }
     }
     Fiddler.pathAdd = function(prefix, suffix){
+        if (prefix.substr(prefix.length - 1) == '/') {
+            prefix = prefix.substr(0, prefix.length - 1);
+        };
+        if (suffix.substr(0, 1) == '/') {
+            suffix = suffix.substr(1);
+        };
         return prefix + "/" + suffix;
     }
     Fiddler.urlAdd = function(prefix, suffix){

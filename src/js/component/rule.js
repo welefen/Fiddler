@@ -25,6 +25,9 @@ var Fiddler_Rule = function(){
         }
     });
     var _isResouceListening = false;
+
+    var _fileErrorFn = null;
+
     Fiddler.mix(rule, {
         match: function(requestInfo, rule){
             if (rule.patternType == "Method") {
@@ -93,6 +96,10 @@ var Fiddler_Rule = function(){
                 if (self.match(data.data, rule)) {
                     var filename = rule.replace;
                     var content = Fiddler_File.getLocalFile(filename, encoding);
+                    if (content === false) {
+                        self.fire("fileError", filename);
+                        return false;
+                    };
                     return {
                         redirectUrl: content
                     }
@@ -115,7 +122,11 @@ var Fiddler_Rule = function(){
                 if (pos === 0) {
                     var suffix = url.substr(rule.pattern.length);
                     var file = Fiddler.pathAdd(rule.replace, suffix);
-                    var content = Fiddler_File.getLocalFile(file, encoding);
+                    var content = Fiddler_File.getLocalFile(file, encoding, data.data.type);
+                    if (content === false) {
+                        self.fire("fileError", file);
+                        return false;
+                    };
                     return {
                         redirectUrl: content
                     }
@@ -245,6 +256,12 @@ var Fiddler_Rule = function(){
                 })
             })
         },
+        fileErrorListening: function(callback){
+            if (callback) {
+                _fileErrorFn = callback
+            };
+            this.on("fileError", _fileErrorFn);
+        },
         disableCacheRule: function(){
             var self = this;
             var list = ["Cache-Control", "Pragma", "If-Modified-Since", "If-None-Match"];
@@ -269,9 +286,6 @@ var Fiddler_Rule = function(){
         },
         userAgentRule: function(agent){
 
-        },
-        isRule: function(info){
-            return info && info.pattern && info.type && info.args;
         },
         parseRule: function(rule){
             var types = {
@@ -299,6 +313,7 @@ var Fiddler_Rule = function(){
             var self = this;
             this.clearAll();
             this.resouceListening(true);
+            this.fileErrorListening();
             if (!enable) {
                 return this;
             };

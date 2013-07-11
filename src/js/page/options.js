@@ -484,8 +484,18 @@ $(function(){
             }
         })
     }
+    /**
+     * read file error
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    function fileErrorCallback(data){
+        var file = data.data;
+        alert("Fiddler: read file `"+ file + "` data error, please check");
+    }
     function init(){
         Fiddler_Rule.resouceListening();
+        Fiddler_Rule.fileErrorListening(fileErrorCallback);
         Fiddler_Event.init();
         bindCompleteEvent();
         bindRequestEvent();
