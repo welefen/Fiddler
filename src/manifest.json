@@ -1,13 +1,17 @@
 {
   "manifest_version": 2,
   "name": "Fiddler",
-  "version": "1",
-  "description": "",
+  "version": "1.0",
+  "description": "Fiddler for chrome extension",
   "background": {
   	"page": "html/background.html"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "homepage_url":"http://www.welefen.com/music-chrome-plugin-upgrade-to-2.html",
+  "homepage_url":"https://github.com/welefen/Fiddler",
+  "browser_action": {
+    "default_icon": "img/icon_16.png",
+    "default_title": "Fiddler"
+  },
   "permissions": [
     "tabs",
     "<all_urls>",
@@ -22,5 +26,6 @@
     "48": "img/icon_48.png",
     "16": "img/icon_16.png"
   },
-  "options_page":"html/options.html"
+  "options_page":"html/options.html",
+  "devtools_page": "html/devtools.html"
 }
