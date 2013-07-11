@@ -18,9 +18,9 @@
     { "path": "bin/chrome_fiddler.plugin/", "public": true}
   ],
   "icons": {
-    "128": "img/icon128.png",
-    "48": "img/icon48.png",
-    "16": "img/icon16.png"
+    "128": "img/icon_128.png",
+    "48": "img/icon_48.png",
+    "16": "img/icon_16.png"
   },
   "options_page":"html/options.html"
 }
