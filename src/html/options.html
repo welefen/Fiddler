@@ -5,11 +5,20 @@
 <title>Fiddler</title>
 <link href="../css/lib/bootstrap.css" type="text/css" rel="stylesheet" />
 <link href="../css/lib/fiddler.css" type="text/css"  rel="stylesheet"/>
+<link href="../css/lib/shCoreDefault.css" type="text/css" rel="stylesheet"/>
 <link href="../css/page/options.css" type="text/css" rel="stylesheet"/>
+
 <script src="../js/lib/jquery.js"></script>
 <script src="../js/lib/when.js"></script>
 <script src="../js/lib/fiddler.js"></script>
 <script src="../js/lib/bootstrap.js"></script>
+<script src="../js/lib/SyntaxHighlighter/shCore.js"></script>
+<script src="../js/lib/SyntaxHighlighter/shBrushCss.js"></script>
+<script src="../js/lib/SyntaxHighlighter/shBrushJScript.js"></script>
+<script src="../js/lib/beautify/beautify_js.js"></script>
+<script src="../js/lib/beautify/beautify_html.js"></script>
+<script src="../js/lib/beautify/beautify_css.js"></script>
+
 <script src="../js/component/event.js"></script>
 <script src="../js/component/file.js"></script>
 <script src="../js/component/resource.js"></script>
@@ -50,7 +59,7 @@
                 Disable Cache</label>
               </a>
             </li>
-            <li class="divider"></li>
+            <!--<li class="divider"></li>
             <li role="presentation" class="dropdown-submenu">
               <a role="menuitem" tabindex="-1" href="#">User Agent</a>
               <ul class="dropdown-menu">
@@ -71,7 +80,7 @@
                 <li class="divider"></li>
                 <li><a tabindex="-1" href="#" data-type="other">Other</a></li>
               </ul>
-            </li>
+            </li>-->
           </ul>
         </li>
         <li class="dropdown">
@@ -212,6 +221,8 @@
         <li><a href="http://jquery.com/" target="_blank">jQuery</a></li>
         <li><a href="http://qwrap.com/" target="_blank">Qwrap</a></li>
         <li><a href="https://github.com/cujojs/when" target="_blank">When.js</a></li>
+        <li><a href="http://jsbeautifier.org/" target="_blank">JS Beautify</a></li>
+        <li><a href="http://alexgorbatchev.com/SyntaxHighlighter/" target="_blank">Syntax Highlighter</a></li>
     </ul>
   </div>
   <div class="modal-footer">
@@ -283,14 +294,14 @@
   <img src="{$url}" />
   {$filename}
 </div>
-<table style="margin-top:20px;">
-  <tr><td align="right" width="40%" style="padding-right:10px;">Dimensions</td><td  width="60%">{$width} x {$height}</td></tr>
-  <tr><td align="right" style="padding-right:10px;">File size</td><td>{$filesize}</td></tr>
-  <tr><td align="right" style="padding-right:10px;">URL</td><td><a href="{$url}" target="_blank">{$url}</a></td></tr>
+<table style="margin-top:20px;width:100%;">
+  <tr><td align="right" width="40%" style="padding-right:10px;"><b>Dimensions</b></td><td  width="60%">{$width} x {$height}</td></tr>
+  <tr><td align="right" style="padding-right:10px;"><b>File size</b></td><td>{$filesize}</td></tr>
+  <tr><td align="right" style="padding-right:10px;"><b>URL</b></td><td><a href="{$url}" target="_blank">{$display_url}</a></td></tr>
 </table>
 </div>
 </script>
-
+<!--<embed type="application/x-chromefiddler" id="chromefiddler">-->
 
 </body>
 </html>

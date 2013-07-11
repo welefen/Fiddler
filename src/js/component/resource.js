@@ -64,6 +64,18 @@ var Fiddler_Resource = function(){
             }
             return deferred.promise;
         },
+        getImgRect: function(url){
+            var deferred = when.defer();
+            var img = new Image();
+            img.onload = function(){
+                deferred.resolve({
+                    width: this.width,
+                    height: this.height
+                })
+            }; 
+            img.src = url;
+            return deferred.promise;
+        },
         getSize: function(requestId){
             var deferred = when.defer();
             var detail = _request[requestId];

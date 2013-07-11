@@ -67,6 +67,15 @@ var Fiddler = function(){
         };
         return string;
     }
+    Fiddler.truncateCenter = function(string, length, suffix){
+        suffix = suffix || "...";
+        if (string.length > length) {
+            var p = parseInt(length / 2);
+            var s = length - p;
+            return string.substr(0, p) + suffix + string.substr(string.length - s);
+        };
+        return string;
+    }
     Fiddler.getHumanSize = function(size){
         size = size | 0;
        var list = [

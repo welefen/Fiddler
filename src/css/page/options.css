@@ -73,6 +73,10 @@ header.navbar{
     width: 550px;
     word-wrap: break-word;
 }
+#tab-beautify{
+    padding: 0;
+    width: 590px;
+}
 #tab-headers .content .item{
     width: 550px;
     word-wrap: break-word;
@@ -91,7 +95,22 @@ header.navbar{
 #tab-preview img{
     display: block;
     margin: auto;
+    box-shadow: 1px 1px 5px #ccc;
+    max-width: 560px;
+    margin-bottom: 5px;
 }
+#tab-preview code{
+    white-space: normal !important;
+}
+#tab-preview .syntaxhighlighter code{
+    width: auto !important;
+}
+#tab-preview .syntaxhighlighter .line{
+    width: 550px !important;
+    overflow: auto !important;
+}
+
+
 
 
 

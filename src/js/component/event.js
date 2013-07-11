@@ -18,6 +18,11 @@ var Fiddler_Event = function(){
             if (!checkUrl(details.url)) {
                 return {};
             };
+            if (details.requestBody) {
+                var arr = details.requestBody.raw;
+                var blob = new Blob(arr);
+                console.log(blob)
+            };
             var result = Fiddler_Rule.fireSome("onBeforeRequest", details);
             if (result) {
                 return result;

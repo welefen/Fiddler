@@ -78,38 +78,77 @@ $(function(){
                 var detail = Fiddler_Resource.getItem(requestId);
                 var type = detail.type;
                 if (type == 'image') {
-                    var filename = detail.url.match(/[^\/]+$/)[0];
-                    var html = Fiddler.tmpl($('#imagePreviewTpl').html(), {
-                        url: detail.url,
-                        filename: filename
-                    });
-                    $('#tab-preview').html(html)
+                    Fiddler_Resource.getSize(requestId).then(function(size){
+                        Fiddler_Resource.getImgRect(detail.url).then(function(rect){
+                            var filename = detail.url.match(/([^\/\?\#]+)(?:[\?\#].*)?$/)[1];
+                            var html = Fiddler.tmpl($('#imagePreviewTpl').html(), {
+                                url: detail.url,
+                                filename: filename,
+                                width: rect.width,
+                                height: rect.height,
+                                filesize: Fiddler.getHumanSize(size),
+                                display_url: Fiddler.truncateCenter(detail.url, 30)
+                            });
+                            $('#tab-preview').html(html)
+                        })
+                    })
                 }else if(type == 'script'){
                     Fiddler_Resource.getContent(requestId).then(function(content){
-                        //alert(content)
+                        var html = '<div class="content"> <pre class="brush: js;gutter: false">'+Fiddler.encode4Html(content)+'</pre> </div>';
+                        $('#tab-preview').html(html);
+                        SyntaxHighlighter.highlight();
+                    })
+                }else if(type == 'stylesheet'){
+                    Fiddler_Resource.getContent(requestId).then(function(content){
+                        var html = '<div class="content"> <pre class="brush: css;gutter: false">'+Fiddler.encode4Html(content)+'</pre> </div>';
+                        $('#tab-preview').html(html);
+                        SyntaxHighlighter.highlight();
                     })
                 }
             },
             "response": function(requestId){
+                var detail = Fiddler_Resource.getItem(requestId);
+                var method = detail.method;
+                if (method == 'POST') {
+                    $('#tab-response').html("can't show POST request response");
+                    return true;
+                }; 
                 Fiddler_Resource.getContent(requestId).then(function(content){
                     content = Fiddler.encode4Html(content);
                     $('#tab-response').html(content)
                 })
             },
             "beautify": function(requestId){
-
+                var detail = Fiddler_Resource.getItem(requestId);
+                var type = detail.type;
+                if (type == 'script') {
+                    Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = Fiddler.encode4Html(js_beautify(content));
+                        var html = '<div class="content" style="padding-left:0"> <pre class="brush: js">'+ (content) +'</pre> </div>';
+                        $('#tab-beautify').html(html);
+                        SyntaxHighlighter.highlight();
+                    })
+                }else if(type == 'stylesheet'){
+                    Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = Fiddler.encode4Html(css_beautify(content));
+                        var html = '<div class="content" style="padding-left:0"> <pre class="brush: css">'+ (content) +'</pre> </div>';
+                        $('#tab-beautify').html(html);
+                        SyntaxHighlighter.highlight();
+                    })
+                }
             }
         }
         var showTypeList = {
             "image": ["headers", "preview"],
             "script": ["headers", "preview", "response", "beautify"],
             "stylesheet": ["headers", "preview", "response", "beautify"],
-            "main_frame": ["headers", "preview", "response", "beautify"],
-            "sub_frame": ["headers", "preview", "response", "beautify"],
+            "main_frame": ["headers", "response"],
+            "sub_frame": ["headers", "response"],
             "xmlhttprequest": ["headers", "response"]
         };
         Fiddler.bindEvent($('#requestList'), {
             'tbody tr': function(){
+                $('#autoResponseList').removeClass('open');  
                 currentEl && currentEl.removeClass('info');
                 var $this = $(this).addClass('info');
                 currentEl = $this;
@@ -119,10 +158,7 @@ $(function(){
                 };
                 detailEl.find('.nav-tabs li').removeClass('active').hide();
                 detailEl.find('.nav-tabs li[data-type="'+detaultTab+'"]').addClass('active').show();
-                ["headers", "preview", "response", "beautify"].forEach(function(item){
-                    var el = $('#tab-'+item);
-                    el.html('').removeClass('active');
-                });
+                $('#tab-headers,#tab-preview,#tab-response,#tab-beautify').removeClass('active').html('');
                 var requestId = currentEl.attr('data-id');
                 var detail = Fiddler_Resource.getItem(requestId);
                 var showTypes = showTypeList[detail.type] || [];
@@ -141,7 +177,8 @@ $(function(){
         Fiddler.bindEvent($('#requestDetail'), {
             'i.icon-remove': function(){
                 currentEl && currentEl.removeClass('info');
-                $('#requestDetail').removeClass('open')
+                $('#tab-headers,#tab-preview,#tab-response,#tab-beautify').html("");
+                $('#requestDetail').removeClass('open');
             },
             '.nav-tabs li a': function(e){
                 e.preventDefault();
@@ -290,6 +327,7 @@ $(function(){
             setRuleEditEnable(checked);
             setRuleListEnable(checked);
             $('#autoResponseList button.btn-add')[checked ? "removeClass" : "addClass"]("disabled");
+            saveRules();
         });
     }
     var userAgents = {
@@ -368,7 +406,7 @@ $(function(){
     }
     function clearRequest(){
         $('#requestList tbody').html('');
-        $('#requestDetail').hide();
+        $('#requestDetail').removeClass('open');
         Fiddler_Resource.clearResource();
     }
     function initTools(){
@@ -422,4 +460,8 @@ $(function(){
         initTools();
     }
     init();
+
+    //var FindFile =  document.getElementById("chromefiddler");
+    //FindFile.OpenFileDialog();
+    //console.log(FindFile)
 })

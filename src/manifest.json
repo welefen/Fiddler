@@ -14,6 +14,9 @@
     "webRequestBlocking", 
     "webRequest"
   ],
+  "plugins": [
+    { "path": "bin/chrome_fiddler", "public": true}
+  ],
   "icons": {
     "128": "img/icon128.png",
     "48": "img/icon48.png",
