@@ -147,11 +147,12 @@ $(function(){
             "xmlhttprequest": ["headers", "response"]
         };
         Fiddler.bindEvent($('#requestList'), {
-            'tbody tr': function(){
+            'tbody tr td.url': function(){
+                var tr = $(this).parents('tr');
                 $('#autoResponseList').removeClass('open');  
                 currentEl && currentEl.removeClass('info');
-                var $this = $(this).addClass('info');
-                currentEl = $this;
+                tr.addClass('info');
+                currentEl = tr;
                 var detailEl = $('#requestDetail');
                 if (!detailEl.hasClass('open')) {
                     detailEl.addClass('open');
@@ -172,6 +173,14 @@ $(function(){
             },
             'tbody tr a': function(e){
                 e.stopPropagation();
+            },
+            'tbody tr td img.type': function(){
+                $('#autoResponseList').addClass('open');
+                $('#autoResponseList button.btn-add').trigger('click');
+                var requestId = $(this).parents('tr').attr('data-id');
+                var detail = Fiddler_Resource.getItem(requestId);
+                var url = detail.url;
+                $('#rulePattern').val(url);
             }
         });
         Fiddler.bindEvent($('#requestDetail'), {
@@ -255,6 +264,8 @@ $(function(){
                 setRuleEditEnable(true);
                 $('#autoResponseList .rule-pattern').val('StringToMatch[6]').select();
                 $('#autoResponseList .rule-replace').val('');
+                $('#rulePatternType').val('String');
+                $('#ruleReplaceType').val('File');
             },
             '.btn-save': function(){
                 if ($(this).hasClass('disabled')) {

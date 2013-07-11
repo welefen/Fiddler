@@ -238,11 +238,11 @@
 <tr class=" {$lowerMethod} {$err}" style="{$display}" data-type="{$type}" data-id="{$requestId}" data-pid="{$parentRequestId}">
     <td>
         &nbsp;&nbsp;
-        <img src="{$img}">
+        <img src="{$img}" class="type">
     </td>
     <td>{$statusCode}</td>
     <td>{$method}</td>
-    <td>
+    <td class="url">
         {$shortPath}
         <a class="icon-url" title="open on new tab" href="{$url}" target="_blank">
             <i class="icon-share"></i>
