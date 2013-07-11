@@ -292,6 +292,9 @@ $(function(){
             },
             '.icon-edit': function(e){
                 e.preventDefault();
+                if ($(this).hasClass('disabled')) {
+                    return false;
+                };
                 var tr = $(this).parents('tr');
                 $('#autoResponseList .rule-list tbody tr').removeClass('info');
                 tr.addClass('info');
@@ -302,9 +305,27 @@ $(function(){
                 $('#ruleReplace').val(data.replace);
             },
             '.icon-remove': function(e){
+                if ($(this).hasClass('disabled')) {
+                    return false;
+                };
                 var tr = $(this).parents('tr');
                 tr.remove();
                 saveRules();
+            },
+            //select file or path
+            '#ruleReplace': function(){
+                if ($(this).hasClass('disabled')) {
+                    return false;
+                };
+                var type = $('#ruleReplaceType').val();
+                if (type != 'File' && type != 'Path') {
+                    return true;
+                };
+                var path = openFiles(type);
+                if (path && path != '/') {
+                    path = "file://" + path;
+                    $(this).val(path);
+                };
             }
         });
         $(document.body).click(function(e){
@@ -404,6 +425,20 @@ $(function(){
             saveRules();
         }
     }
+    /**
+     * open file by npapi
+     * @param  {[type]} type [description]
+     * @return {[type]}      [description]
+     */
+    function openFiles(type){
+        try{
+            var FindFile =  document.getElementById("chromefiddler");
+            var path = FindFile.OpenSavePath("/", type);
+            return path;
+        }catch(e){
+            return '';
+        }
+    }
     function clearRequest(){
         $('#requestList tbody').html('');
         $('#requestDetail').removeClass('open');
@@ -460,8 +495,4 @@ $(function(){
         initTools();
     }
     init();
-
-    //var FindFile =  document.getElementById("chromefiddler");
-    //FindFile.OpenFileDialog();
-    //console.log(FindFile)
 })

@@ -178,7 +178,10 @@ header.navbar{
     overflow: hidden;
     white-space: nowrap;
 }
-
+#autoResponseList .rule-list .rule-check{
+    position: relative;
+    top: -2px;
+}
 
 #autoResponseList .rule-edit{
     position: absolute;

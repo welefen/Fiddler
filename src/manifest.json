@@ -15,7 +15,7 @@
     "webRequest"
   ],
   "plugins": [
-    { "path": "bin/chrome_fiddler", "public": true}
+    { "path": "bin/chrome_fiddler.plugin/", "public": true}
   ],
   "icons": {
     "128": "img/icon128.png",
