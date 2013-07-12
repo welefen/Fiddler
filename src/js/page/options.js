@@ -94,12 +94,14 @@ $(function(){
                     })
                 }else if(type == 'script'){
                     Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = content || "";
                         var html = '<div class="content"> <pre class="brush: js;gutter: false">'+Fiddler.encode4Html(content)+'</pre> </div>';
                         $('#tab-preview').html(html);
                         SyntaxHighlighter.highlight();
                     })
                 }else if(type == 'stylesheet'){
                     Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = content || "";
                         var html = '<div class="content"> <pre class="brush: css;gutter: false">'+Fiddler.encode4Html(content)+'</pre> </div>';
                         $('#tab-preview').html(html);
                         SyntaxHighlighter.highlight();
@@ -114,6 +116,7 @@ $(function(){
                     return true;
                 }; 
                 Fiddler_Resource.getContent(requestId).then(function(content){
+                    content = content || "";
                     content = Fiddler.encode4Html(content);
                     $('#tab-response').html(content)
                 })
@@ -123,6 +126,7 @@ $(function(){
                 var type = detail.type;
                 if (type == 'script') {
                     Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = content || "";
                         content = Fiddler.encode4Html(js_beautify(content));
                         var html = '<div class="content" style="padding-left:0"> <pre class="brush: js">'+ (content) +'</pre> </div>';
                         $('#tab-beautify').html(html);
@@ -130,6 +134,7 @@ $(function(){
                     })
                 }else if(type == 'stylesheet'){
                     Fiddler_Resource.getContent(requestId).then(function(content){
+                        content = content || "";
                         content = Fiddler.encode4Html(css_beautify(content));
                         var html = '<div class="content" style="padding-left:0"> <pre class="brush: css">'+ (content) +'</pre> </div>';
                         $('#tab-beautify').html(html);
