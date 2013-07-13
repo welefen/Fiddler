@@ -1,0 +1,65 @@
+﻿Build started 2013/7/13 17:44:48.
+     1>Project "D:\chrome-fiddler\np_chrome_fiddler\np_chrome_fiddler\np_chrome_fiddler.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "D:\chrome-fiddler\np_chrome_fiddler\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\np_chrome_fiddler.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D NP_CHROME_FIDDLER_EXPORTS /D _X86_ /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\chrome_fiddler_plugin.cc ..\..\chrome_fiddler_script_object.cc ..\..\log.cc ..\..\npn_entry.cc ..\..\npp_entry.cc ..\..\np_entry.cc ..\..\plugin_base.cc ..\..\plugin_factory.cc ..\..\script_object_base.cc ..\..\script_object_factory.cc
+         script_object_factory.cc
+         script_object_base.cc
+         plugin_factory.cc
+         plugin_base.cc
+         np_entry.cc
+         npp_entry.cc
+         npn_entry.cc
+         log.cc
+     1>d:\chrome-fiddler\log.cc(38): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         chrome_fiddler_script_object.cc
+         chrome_fiddler_plugin.cc
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\np_chrome_fiddler.res" np_chrome_fiddler.rc 
+       ManifestResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\np_chrome_fiddler.dll.embed.manifest.res" Debug\np_chrome_fiddler_manifest.rc 
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"chrome_fiddler.def" /MANIFEST /ManifestFile:"Debug\np_chrome_fiddler.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.lib" /MACHINE:X86 /DLL Debug\np_chrome_fiddler.res
+         Debug\np_chrome_fiddler.dll.embed.manifest.res
+         Debug\chrome_fiddler_plugin.obj
+         Debug\chrome_fiddler_script_object.obj
+         Debug\log.obj
+         Debug\npn_entry.obj
+         Debug\npp_entry.obj
+         Debug\np_entry.obj
+         Debug\plugin_base.obj
+         Debug\plugin_factory.obj
+         Debug\script_object_base.obj
+         Debug\script_object_factory.obj
+            Creating library D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.lib and object D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.exp
+     1>np_chrome_fiddler.exp : warning LNK4070: /OUT:chrome_fiddler.dll directive in .EXP differs from output filename 'D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.dll'; ignoring directive
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\np_chrome_fiddler.dll.embed.manifest" /manifest Debug\np_chrome_fiddler.dll.intermediate.manifest
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\np_chrome_fiddler.dll.embed.manifest.res" Debug\np_chrome_fiddler_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"chrome_fiddler.def" /MANIFEST /ManifestFile:"Debug\np_chrome_fiddler.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.lib" /MACHINE:X86 /DLL Debug\np_chrome_fiddler.res
+         Debug\np_chrome_fiddler.dll.embed.manifest.res
+         Debug\chrome_fiddler_plugin.obj
+         Debug\chrome_fiddler_script_object.obj
+         Debug\log.obj
+         Debug\npn_entry.obj
+         Debug\npp_entry.obj
+         Debug\np_entry.obj
+         Debug\plugin_base.obj
+         Debug\plugin_factory.obj
+         Debug\script_object_base.obj
+         Debug\script_object_factory.obj
+         np_chrome_fiddler.vcxproj -> D:\chrome-fiddler\np_chrome_fiddler\Debug\np_chrome_fiddler.dll
+       FinalizeBuildStatus:
+         Deleting file "Debug\np_chrome_fiddler.unsuccessfulbuild".
+         Touching "Debug\np_chrome_fiddler.lastbuildstate".
+     1>Done Building Project "D:\chrome-fiddler\np_chrome_fiddler\np_chrome_fiddler\np_chrome_fiddler.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.00

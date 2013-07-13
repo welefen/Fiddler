@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>chrome_fiddler</string>
+	<key>CFBundleGetInfoString</key>
+	<string>420+, Copyright 2006-2009 Apple Inc.</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>chrome.chrome_fiddler</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>BRPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>CFPlugInDynamicRegisterFunction</key>
+	<string></string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>00000000-0000-0000-0000-000000000000</key>
+		<string>MyFactoryFunction</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>00000000-0000-0000-0000-000000000000</key>
+		<array>
+			<string>00000000-0000-0000-0000-000000000000</string>
+		</array>
+	</dict>
+	<key>CFPlugInUnloadFunction</key>
+	<string></string>
+	<key>WebPluginDescription</key>
+	<string>Chrome Fiddler Extension Plugin</string>
+	<key>WebPluginMIMETypes</key>
+	<dict>
+		<key>application/x-chromefiddler</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>chrome_fiddler</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>Chrome Fiddler Extension Plugin</string>
+		</dict>
+	</dict>
+	<key>WebPluginName</key>
+	<string>Chrome Fiddler Extension Plugin</string>
+</dict>
+</plist>
