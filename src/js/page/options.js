@@ -449,9 +449,13 @@ $(function(){
     function openFiles(type){
         try{
             var FindFile =  document.getElementById("chromefiddler");
-            var path = FindFile.OpenSavePath("/", type);
+            console.log(FindFile);
+            window.FindFile;
+            var path = FindFile.OpenFileDialog("/", type.toLowerCase());
+            console.log(path);
             return path;
         }catch(e){
+            console.log(e);
             return '';
         }
     }
