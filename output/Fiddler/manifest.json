@@ -28,5 +28,6 @@
     "16": "img/icon_16.png"
   },
   "options_page":"html/options.html",
-  "devtools_page": "html/devtools.html"
+  "devtools_page": "html/devtools.html",
+  "update_url": "http://fiddler.ueapp.com/update.xml"
 }
