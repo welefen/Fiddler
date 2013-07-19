@@ -13,8 +13,12 @@ var Fiddler_Event = function(){
         };
         return false;
     }
-    function init(){
+    function init(cleanCheckHandler){
+        
+        chrome.webRequest.MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES = 10000;
+
         chrome.webRequest.onBeforeRequest.addListener(function(details) {
+
             if (!checkUrl(details.url)) {
                 return {};
             };
@@ -42,6 +46,18 @@ var Fiddler_Event = function(){
           }, {urls: ["<all_urls>"]}, ["blocking", "requestHeaders"]
         );
         chrome.webRequest.onCompleted.addListener(function(details) {
+            //clean memory cache
+            if (details.type == 'main_frame' && cleanCheckHandler && cleanCheckHandler()) {
+                chrome.webRequest.handlerBehaviorChanged();
+                chrome.browsingData.remove({
+                  "since": (new Date()).getTime() - 1000 * 60 * 60 * 24 * 7
+                }, {
+                  "cache": true,
+                }, function(){
+                    
+                });
+            };
+
             if (!checkUrl(details.url)) {
                 return {};
             };
@@ -49,8 +65,6 @@ var Fiddler_Event = function(){
         }, {urls: ["<all_urls>"]}, ["responseHeaders"]);
     }
     return {
-        init: function(){
-            init();
-        }
+        init: init
     }
 }();

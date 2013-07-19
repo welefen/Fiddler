@@ -529,7 +529,9 @@ $(function(){
     function init(){
         Fiddler_Rule.resouceListening();
         Fiddler_Rule.fileErrorListening(fileErrorCallback);
-        Fiddler_Event.init();
+        Fiddler_Event.init(function(){
+            return $('#disabledCacheInput')[0].checked;
+        });
         bindCompleteEvent();
         bindRequestEvent();
         bindAutoResponseEvent();

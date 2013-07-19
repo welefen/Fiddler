@@ -254,7 +254,7 @@ var Fiddler_Rule = function(){
                     Fiddler_Resource.add(detail, item);
                     return false;
                 })
-            })
+            });
         },
         fileErrorListening: function(callback){
             if (callback) {
