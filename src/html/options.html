@@ -258,6 +258,15 @@
   </div>
   {/if}
 
+  {if(opts.formData)}
+  <b>Form Data <span class="num">({opts.formDataLength})</span></b>
+  <div class="headers-list">
+    {for(var name in opts.formData)}
+      <div class="item"><b>{name}:</b> {=opts.formData[name]}</div>
+    {/for}
+  </div>
+  {/if}
+
   {if(opts.cookie)}
   <b class="treeRight">Cookie <span class="num">({opts.cookieLength}) {opts.cookieSize}byte</span></b>
   <div  class="headers-list" style="display:none">

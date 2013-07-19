@@ -115,6 +115,23 @@ var Fiddler_Resource = function(){
                 })
             }
             return deferred.promise;
+        },
+        getQueryData: function(url){
+            var queryUrl = Fiddler.queryUrl(url);
+            var ret = {
+                data: null,
+                length: 0
+            }
+            for(var name in queryUrl){
+                if (queryUrl[name] && queryUrl[name].join) {
+                    queryUrl[name] = "[" + queryUrl[name].join(", ") + "]";
+                };
+                ret.length++;
+            };
+            if (ret.length) {
+                ret.data = queryUrl;
+            };
+            return ret;
         }
     })
     return resource;

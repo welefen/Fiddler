@@ -60,20 +60,23 @@ $(function(){
         var cbs = {
             "headers" : function(requestId){
                 var detail = Fiddler_Resource.getItem(requestId);
-                var queryUrl = Fiddler.queryUrl(detail.url);
-                var flag = false;
-                var queryUrlLength = 0;
-                for(var name in queryUrl){
-                    flag = true;
-                    if (queryUrl[name] && queryUrl[name].join) {
-                        queryUrl[name] = "[" + queryUrl[name].join(", ") + "]";
-                    };
-                    queryUrlLength++;
+                //query url
+                var queryInfo = Fiddler_Resource.getQueryData(detail.url)
+                detail.queryUrl = queryInfo.data;
+                detail.queryUrlLength = queryInfo.length;
+                //form data
+                var requestBody = detail.requestBody;
+                if (requestBody && requestBody.raw) {
+                    try{
+                        var buf = requestBody.raw[0].bytes;
+                        var bufView = new Uint8Array(buf);
+                        var result =  String.fromCharCode.apply(null, bufView);
+                        var formData = Fiddler_Resource.getQueryData(result);
+                        detail.formData = formData.data;
+                        detail.formDataLength = formData.length;
+                    }catch(e){}
                 };
-                if (flag) {
-                    detail.queryUrl = queryUrl;
-                    detail.queryUrlLength = queryUrlLength;
-                };
+
                 var html = Fiddler.tmpl($('#headersTpl').html(), detail);
                 $('#tab-headers').html(html)
             },
