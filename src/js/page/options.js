@@ -208,6 +208,19 @@ $(function(){
                 if (!el.html()) {
                     cbs[type] && cbs[type](currentEl.attr('data-id'));
                 };
+            },
+            '#tab-headers .content>b': function(){
+                var open = !$(this).hasClass('treeRight');
+                var next = $(this).next();
+                if (open) {
+                    $(this).addClass('treeRight');
+                    next.hide();
+                    $(this).find('span.num').show();
+                }else{
+                    $(this).removeClass('treeRight');
+                    next.show();
+                    $(this).find('span.num').hide();
+                }
             }
         })
     }

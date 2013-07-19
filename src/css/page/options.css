@@ -85,6 +85,24 @@ header.navbar{
     color: #666;
     font-size: 13px;
 }
+#tab-headers .content>b{
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    padding-left: 10px;
+    background: url(../../img/treeDown.png) no-repeat left center;
+    cursor: pointer;
+    margin-left: -10px;
+}
+#tab-headers .content>b span.num{
+    display: none;
+    color: #666;
+    font-size: 12px;
+    font-weight: normal;
+}
+#tab-headers .content>b.treeRight{
+    background-image: url(../../img/treeRight.png);
+}
 
 #requestDetail .tab-content .tab-pane{
     display: none;
