@@ -40,6 +40,27 @@ var Fiddler_Resource = function(){
                         return true;
                     };
                 });
+                //cookie
+                var requestHeaders = _request[requestId].requestHeaders || [];
+                var cookie = '';
+                requestHeaders.some(function(item){
+                    if (item.name == 'Cookie') {
+                        cookie = item.value;
+                        return true;
+                    };
+                });
+                if (cookie) {
+                    _request[requestId].cookieSize = cookie.length;
+                    var cookieObj = {};
+                    cookie = cookie.split(/;\s*/g);
+                    cookie.forEach(function(item){
+                        item = item.split('=');
+                        cookieObj[item[0]] = unescape(item[1]);
+                    });
+                    _request[requestId].cookieLength = cookie.length;
+                    _request[requestId].cookie = cookieObj;
+                };
+
                 var urlInfo = Fiddler.getUrlDetail(data.url);
                 Fiddler.mix(_request[requestId], urlInfo, true);
                 this.fire("onCompleted", _request[requestId]);

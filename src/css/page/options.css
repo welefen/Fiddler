@@ -100,10 +100,15 @@ header.navbar{
     font-size: 12px;
     font-weight: normal;
 }
+#tab-headers .content .headers-list{
+    padding-left: 10px;
+}
 #tab-headers .content>b.treeRight{
     background-image: url(../../img/treeRight.png);
 }
-
+#tab-headers .content>b.treeRight .num{
+    display: inline;
+}
 #requestDetail .tab-content .tab-pane{
     display: none;
 }

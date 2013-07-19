@@ -62,14 +62,17 @@ $(function(){
                 var detail = Fiddler_Resource.getItem(requestId);
                 var queryUrl = Fiddler.queryUrl(detail.url);
                 var flag = false;
+                var queryUrlLength = 0;
                 for(var name in queryUrl){
                     flag = true;
                     if (queryUrl[name] && queryUrl[name].join) {
                         queryUrl[name] = "[" + queryUrl[name].join(", ") + "]";
                     };
+                    queryUrlLength++;
                 };
                 if (flag) {
                     detail.queryUrl = queryUrl;
+                    detail.queryUrlLength = queryUrlLength;
                 };
                 var html = Fiddler.tmpl($('#headersTpl').html(), detail);
                 $('#tab-headers').html(html)
@@ -215,11 +218,9 @@ $(function(){
                 if (open) {
                     $(this).addClass('treeRight');
                     next.hide();
-                    $(this).find('span.num').show();
                 }else{
                     $(this).removeClass('treeRight');
                     next.show();
-                    $(this).find('span.num').hide();
                 }
             }
         })

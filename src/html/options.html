@@ -248,22 +248,33 @@
   <div class="item"><b>Request URL:</b> {$url}</div>
   <div class="item"><b>Request Method:</b> {$method}</div>
   <div class="item"><b>Status Code:</b> <span {if ($statusCode >= 400)}style="color:red"{/if}>{$statusCode}</span></div>
+
   {if(opts.queryUrl)}
-  <b>Query Url</b>
-  <div style="padding-left:10px;">
+  <b>Query Url <span class="num">({opts.queryUrlLength})</span></b>
+  <div class="headers-list">
     {for(var name in opts.queryUrl)}
       <div class="item"><b>{name}:</b> {opts.queryUrl[name]}</div>
     {/for}
   </div>
   {/if}
+
+  {if(opts.cookie)}
+  <b class="treeRight">Cookie <span class="num">({opts.cookieLength}) {opts.cookieSize}byte</span></b>
+  <div  class="headers-list" style="display:none">
+    {for(var name in opts.cookie)}
+      <div class="item"><b>{name}:</b> {opts.cookie[name]}</div>
+    {/for}
+  </div>
+  {/if}
+
   <b>Request Headers <span class="num">({opts.requestHeaders.length})</span></b>
-  <div style="padding-left:10px;">
+  <div  class="headers-list">
     {for(var i=0;i<opts.requestHeaders.length;i++)}
       <div class="item"><b>{opts.requestHeaders[i].name}:</b> {opts.requestHeaders[i].value}</div>
     {/for}
   </div>
   <b>Response Headers <span class="num">({opts.responseHeaders.length})</span></b>
-  <div style="padding-left:10px;">
+  <div  class="headers-list">
     {for(var i=0;i<opts.responseHeaders.length;i++)}
       <div class="item"><b>{opts.responseHeaders[i].name}:</b> {opts.responseHeaders[i].value}</div>
     {/for}
