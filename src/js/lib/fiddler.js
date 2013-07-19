@@ -19,6 +19,9 @@ var Fiddler = function(){
         return pattern.test(string);
     }
     Fiddler.queryUrl = function (url, key) {
+        if (url.indexOf('?') == -1) {
+            return {};
+        };
         url = url.replace(/^[^?=]*\?/ig, '').split('#')[0]; 
         var json = {};
         url.replace(/(^|&)([^&=]+)=([^&]*)/g, function (a, b, key , value){

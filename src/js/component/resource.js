@@ -117,7 +117,7 @@ var Fiddler_Resource = function(){
             return deferred.promise;
         },
         getQueryData: function(url){
-            var queryUrl = Fiddler.queryUrl(url);
+            var queryUrl = Fiddler.queryUrl(url) || {};
             var ret = {
                 data: null,
                 length: 0
