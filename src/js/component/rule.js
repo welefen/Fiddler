@@ -95,7 +95,7 @@ var Fiddler_Rule = function(){
                 var encoding = Fiddler_Config.getEncoding();
                 if (self.match(data.data, rule)) {
                     var filename = rule.replace;
-                    var content = Fiddler_File.getLocalFile(filename, encoding);
+                    var content = Fiddler_File.getLocalFile(filename, encoding, data.data.type);
                     if (content === false) {
                         self.fire("fileError", filename);
                         return false;

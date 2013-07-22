@@ -19,6 +19,16 @@ var Fiddler_File = function(){
         text = encodeURIComponent(text);
         return text;
     }
+    function getMimeType(type){
+        var types = {
+            "image": "image/png",
+            "script": "text/javascript",
+            "stylesheet": "text/css",
+            "main_frame": "text/html",
+            "sub_frame": "text/html"
+        };
+        return types[type] || "text/plain";
+    }
     return {
         /**
          * get local file content by xhr
@@ -33,8 +43,9 @@ var Fiddler_File = function(){
             if (!text) {
                 return false;
             };
+            var mimeType = getMimeType(type);
             if (encoding) {
-                text = "data:text/javascript; " + encoding + "," + encodeText(text, type);
+                text = "data:"+mimeType+"; " + encoding + "," + encodeText(text, type);
             };
             return text;
         },
