@@ -1,0 +1,18 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.div1, .div2, .div3{
+    width: 306px;
+    height: 97px;
+    background-color: red;
+}
+.div1{
+    background-image: url(../img/btn_login_qq_selected.png);
+}
+.div2{
+    background-image: url(../img/btn_login_weibo_selected.png);
+}
+.div3{
+    background-image: url(../img/btn_login_visitor_selected.png);
+}
