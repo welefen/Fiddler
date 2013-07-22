@@ -48,14 +48,7 @@ var Fiddler_Event = function(){
         chrome.webRequest.onCompleted.addListener(function(details) {
             //clean memory cache
             if (details.type == 'main_frame' && cleanCheckHandler && cleanCheckHandler()) {
-                chrome.webRequest.handlerBehaviorChanged();
-                chrome.browsingData.remove({
-                  "since": (new Date()).getTime() - 1000 * 60 * 60 * 24 * 7
-                }, {
-                  "cache": true,
-                }, function(){
-                    
-                });
+                //chrome.webRequest.handlerBehaviorChanged();
             };
 
             if (!checkUrl(details.url)) {

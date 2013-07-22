@@ -538,6 +538,13 @@ $(function(){
         initData();
         initFilter();
         initTools();
+        /*chrome.browsingData.remove({
+          "since": (new Date()).getTime() - 1000 * 60 * 60 * 24 * 7
+        }, {
+          "cache": true,
+        }, function(){
+            
+        });*/
     }
     init();
 })
