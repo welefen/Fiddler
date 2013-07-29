@@ -4,22 +4,13 @@
  */
 var Fiddler_Event = function(){
     "use strict";
-    function checkUrl(url){
-        if (url.indexOf('?fiddler=') > -1 || url.indexOf('&fiddler=') > -1 ) {
-            return false;
-        };
-        if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
-            return true;
-        };
-        return false;
-    }
     function init(cleanCheckHandler){
         
         chrome.webRequest.MAX_HANDLER_BEHAVIOR_CHANGED_CALLS_PER_10_MINUTES = 10000;
 
         chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
-            if (!checkUrl(details.url)) {
+            if (!Fiddler.checkUrl(details.url)) {
                 return {};
             };
             var result = Fiddler_Rule.fireSome("onBeforeRequest", details);
@@ -29,7 +20,7 @@ var Fiddler_Event = function(){
            }, {urls:["<all_urls>"]}, ["blocking", "requestBody"] 
         );
         chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
-            if (!checkUrl(details.url)) {
+            if (!Fiddler.checkUrl(details.url)) {
                 return {};
             };
             var result = Fiddler_Rule.fireMerge("onBeforeSendHeaders", details);
@@ -51,7 +42,7 @@ var Fiddler_Event = function(){
                 //chrome.webRequest.handlerBehaviorChanged();
             };
 
-            if (!checkUrl(details.url)) {
+            if (!Fiddler.checkUrl(details.url)) {
                 return {};
             };
             Fiddler_Rule.fire("onCompleted", details);

@@ -18,6 +18,28 @@ var Fiddler = function(){
         var pattern = /^[\w\.]+\s*\(.*\);?$/;
         return pattern.test(string);
     }
+    Fiddler.getFileExt = function(file){
+        if (file.indexOf('?') > -1) {
+            file = file.substr(0, file.indexOf('?'));
+        };
+        var pos = file.lastIndexOf(".");
+        return file.substr(pos + 1);
+    }
+    /**
+     * check url is http or https
+     * @param  {[type]} url [description]
+     * @return {[type]}     [description]
+     */
+    Fiddler.checkUrl = function(url){
+        url = url || "";
+        if (url.indexOf('?fiddler=') > -1 || url.indexOf('&fiddler=') > -1 ) {
+            return false;
+        };
+        if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+            return true;
+        };
+        return false;
+    }
     Fiddler.queryUrl = function (url, key) {
         if (url.indexOf('?') == -1) {
             return {};

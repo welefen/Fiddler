@@ -16,7 +16,8 @@ var Fiddler_Resource = function(){
             var requestId = data.requestId;
             data[type + "Time"] = data.timeStamp;
             if (!(requestId in _request)) {
-                _request[requestId] = data;
+                _request[requestId] = {};
+                Fiddler.mix(_request[requestId], data);
             }else{
                 for(var name in data){
                     _request[requestId][name] = data[name];
@@ -85,17 +86,60 @@ var Fiddler_Resource = function(){
             }
             return deferred.promise;
         },
-        getImgRect: function(url){
-            var deferred = when.defer();
+        setContent: function(url, content){
+            if (!content) {
+                return false;
+            };
+            var getRequestId = 0;
+            for(var requestId in _request){
+                if (_request[requestId]['url'] === url) {
+                    getRequestId = requestId;
+                };
+            };
+            if (getRequestId) {
+                _request[getRequestId].content = content;
+                _request[getRequestId].size = content.length;
+            };
+        },
+        getImgRect: function(url, oldUrl, deferred){
+            if (!deferred) {
+                deferred = when.defer();
+            };
             var img = new Image();
+            var self = this;
             img.onload = function(){
                 deferred.resolve({
                     width: this.width,
-                    height: this.height
+                    height: this.height,
+                    old: url === oldUrl
                 })
-            }; 
+            };
+            img.onerror = function(){
+                if (url == oldUrl) {
+                    deferred.resolve({
+                        width: this.width,
+                        height: this.height
+                    })
+                }else{
+                    return self.getImgRect(oldUrl, oldUrl, deferred);
+                }
+            }
             img.src = url;
             return deferred.promise;
+        },
+        getImgUrl: function(requestId){
+            var detail = _request[requestId];
+            var content = detail.content;
+            var ext = Fiddler.getFileExt(detail.url);
+            if (ext && content) {
+                var prefix = content.substr(100);
+                var regexp = /^[\w\+\/\=]+$/;
+                if (!regexp.test(prefix)) {
+                    content = Base64.encode(content);
+                };
+                return "data:image/"+ext+";base64," + content;
+            };
+            return detail.url;
         },
         getSize: function(requestId){
             var deferred = when.defer();

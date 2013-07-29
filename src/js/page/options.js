@@ -85,9 +85,11 @@ $(function(){
                 var type = detail.type;
                 if (type == 'image') {
                     Fiddler_Resource.getSize(requestId).then(function(size){
-                        Fiddler_Resource.getImgRect(detail.url).then(function(rect){
+                        var imgUrl = Fiddler_Resource.getImgUrl(requestId);
+                        Fiddler_Resource.getImgRect(imgUrl, detail.url).then(function(rect){
                             var filename = detail.url.match(/([^\/\?\#]+)(?:[\?\#].*)?$/)[1];
                             var html = Fiddler.tmpl($('#imagePreviewTpl').html(), {
+                                imgUrl: rect.old ? detail.url : imgUrl,
                                 url: detail.url,
                                 filename: filename,
                                 width: rect.width,
@@ -526,6 +528,14 @@ $(function(){
         var file = data.data;
         alert("Fiddler: read file `"+ file + "` data error, please check");
     }
+    function getContentFromDevTools(){
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            var method = request.method;
+            if (method == 'requestContent') {
+                Fiddler_Resource.setContent(request.url, request.content);
+            };
+        });
+    }
     function init(){
         Fiddler_Rule.resouceListening();
         Fiddler_Rule.fileErrorListening(fileErrorCallback);
@@ -538,6 +548,7 @@ $(function(){
         initData();
         initFilter();
         initTools();
+        getContentFromDevTools();
         /*chrome.browsingData.remove({
           "since": (new Date()).getTime() - 1000 * 60 * 60 * 24 * 7
         }, {
