@@ -16,7 +16,11 @@ var Fiddler_File = function(){
                 return "\\u" + new Array(5 - tmp.length).join('0') + tmp;
             });
         };
-        text = encodeURIComponent(text);
+        if (type == 'main_frame') {
+            //text = btoa(text)
+        }else{
+            text = encodeURIComponent(text);
+        }
         return text;
     }
     function getMimeType(type){

@@ -1,0 +1,1 @@
+chrome.devtools.network.onRequestFinished.addListener(function(e){var t=e.request.url;if(!Fiddler.checkUrl(t))return!0;e.getContent(function(n){var r={method:"requestContent",url:t,content:n,har:JSON.stringify(e)};chrome.runtime.sendMessage(r,function(e){})})})

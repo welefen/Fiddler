@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fiddler",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Fiddler for chrome extension",
   "background": {
   	"page": "html/background.html"
@@ -16,7 +16,8 @@
     "tabs",
     "<all_urls>",
     "webRequestBlocking", 
-    "webRequest"
+    "webRequest",
+    "browsingData"
   ],
   "plugins": [
     { "path": "bin/chrome_fiddler.plugin/" },
