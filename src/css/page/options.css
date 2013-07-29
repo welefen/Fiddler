@@ -93,6 +93,7 @@ header.navbar{
     background: url(../../img/treeDown.png) no-repeat left center;
     cursor: pointer;
     margin-left: -10px;
+    -webkit-user-select: none;
 }
 #tab-headers .content>b span.num{
     display: none;
