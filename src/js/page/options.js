@@ -71,7 +71,7 @@ $(function(){
                         var buf = requestBody.raw[0].bytes;
                         var bufView = new Uint8Array(buf);
                         var result =  String.fromCharCode.apply(null, bufView);
-                        var formData = Fiddler_Resource.getQueryData(result);
+                        var formData = Fiddler_Resource.getQueryData("?" + result);
                         detail.formData = formData.data;
                         detail.formDataLength = formData.length;
                     }catch(e){}
