@@ -66,15 +66,29 @@ $(function(){
                 detail.queryUrlLength = queryInfo.length;
                 //form data
                 var requestBody = detail.requestBody;
-                if (requestBody && requestBody.raw) {
-                    try{
-                        var buf = requestBody.raw[0].bytes;
-                        var bufView = new Uint8Array(buf);
-                        var result =  String.fromCharCode.apply(null, bufView);
-                        var formData = Fiddler_Resource.getQueryData("?" + result);
-                        detail.formData = formData.data;
-                        detail.formDataLength = formData.length;
-                    }catch(e){}
+                if (requestBody) {
+                    if (requestBody.formData) {
+                        var length = 0;
+                        for(var name in requestBody.formData){
+                            length++;
+                            if (requestBody.formData[name].length == 1) {
+                                requestBody.formData[name] = requestBody.formData[name][0];
+                            }else{
+                                requestBody.formData[name] = "[" + requestBody.formData[name].join(",") + "]";
+                            }
+                        }
+                        detail.formData = requestBody.formData;
+                        detail.formDataLength = length;
+                    }else if(requestBody.raw){
+                        try{
+                            var buf = requestBody.raw[0].bytes;
+                            var bufView = new Uint8Array(buf);
+                            var result =  String.fromCharCode.apply(null, bufView);
+                            var formData = Fiddler_Resource.getQueryData("?" + result);
+                            detail.formData = formData.data;
+                            detail.formDataLength = formData.length;
+                        }catch(e){}
+                    }
                 };
 
                 var html = Fiddler.tmpl($('#headersTpl').html(), detail);
