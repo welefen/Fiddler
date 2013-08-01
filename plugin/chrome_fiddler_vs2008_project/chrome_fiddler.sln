@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chrome_fiddler", "chrome_fiddler\chrome_fiddler.vcproj", "{DD996793-2B7D-464D-BA6A-0B9CB08557EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD996793-2B7D-464D-BA6A-0B9CB08557EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD996793-2B7D-464D-BA6A-0B9CB08557EE}.Debug|Win32.Build.0 = Debug|Win32
+		{DD996793-2B7D-464D-BA6A-0B9CB08557EE}.Release|Win32.ActiveCfg = Release|Win32
+		{DD996793-2B7D-464D-BA6A-0B9CB08557EE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
