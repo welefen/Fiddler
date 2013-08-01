@@ -21,7 +21,7 @@
   ],
   "plugins": [
     { "path": "bin/chrome_fiddler.plugin/" },
-    { "path": "bin/np_chrome_fiddler.dll" }
+    { "path": "bin/chrome_fiddler.dll" }
   ],
   "icons": {
     "128": "img/icon_128.png",
