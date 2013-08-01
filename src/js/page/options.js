@@ -529,10 +529,17 @@ $(function(){
         alert("Fiddler: read file `"+ file + "` data error, please check");
     }
     function getContentFromDevTools(){
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener(function(request) {
             var method = request.method;
             if (method == 'requestContent') {
                 Fiddler_Resource.setContent(request.url, request.content);
+            };
+        });
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            if (request.method == 'token' && request.value == 'devtools') {
+                sendResponse({
+                    result: "ok"
+                })
             };
         });
     }
