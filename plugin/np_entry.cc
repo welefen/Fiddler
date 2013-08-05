@@ -11,8 +11,6 @@
 using namespace Gdiplus;
 ULONG_PTR token;
 #pragma comment(lib,"gdiplus.lib")
-#elif GTK
-#include "key_binder.h"
 #endif
 
 extern NPNetscapeFuncs* g_npn_funcs;
@@ -47,14 +45,10 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* nppfuncs) {
 
 NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 #if !defined(_WINDOWS) && !defined(WEBKIT_DARWIN_SDK)
-                             , NPPluginFuncs *nppfuncs) {
-#else
+                             , NPPluginFuncs* nppfuncs
+#endif
                              ) {
-#endif
     PluginFactory::Init();
-#ifdef GTK
-    KeyBinder::Init();
-#endif
     g_logger.OpenLog("NPAPI");
     if(npnf == NULL) {
         return NPERR_INVALID_FUNCTABLE_ERROR;
@@ -76,8 +70,6 @@ NPError OSCALL NP_Initialize(NPNetscapeFuncs* npnf
 NPError OSCALL NP_Shutdown() {
 #ifdef _WINDOWS
     GdiplusShutdown(token);
-#elif GTK
-    KeyBinder::UnInit();
 #endif
     return NPERR_NO_ERROR;
 }

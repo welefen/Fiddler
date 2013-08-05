@@ -42,6 +42,7 @@ NPError ChromeFiddlerPlugin::Init(NPP instance, uint16_t mode, int16_t argc, cha
 
 NPError ChromeFiddlerPlugin::UnInit(NPSavedData** save) {
     g_logger.WriteLog("msg", "ChromeFiddlerPlugin UnInit");
+    g_logger.CloseLog();
     PluginBase::UnInit(save);
     script_object_ = NULL;
     return NPERR_NO_ERROR;
