@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fiddler",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fiddler for chrome extension",
   "background": {
   	"page": "html/background.html"
@@ -21,7 +21,7 @@
   ],
   "plugins": [
     { "path": "bin/chrome_fiddler.plugin/" },
-    { "path": "bin/np_chrome_fiddler.dll" }
+    { "path": "bin/chrome_fiddler.dll" }
   ],
   "icons": {
     "128": "img/icon_128.png",
