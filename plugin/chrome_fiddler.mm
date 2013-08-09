@@ -5,6 +5,7 @@
 std::string GetFilePath(const char* path, const char* dialog_title, std::string option) {
     int runResult;
     NSString *str = [NSString stringWithUTF8String:path];
+    str = [NSString stringWithFormat:@"%@%@", @"file://", str];
     NSURL *url = [NSURL URLWithString:[str stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
     NSOpenPanel *op = [NSOpenPanel openPanel];
