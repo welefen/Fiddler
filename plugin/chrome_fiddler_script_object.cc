@@ -2,15 +2,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+
 #ifdef _WINDOWS
 #include <atlenc.h>
 #include <GdiPlus.h>
 #include <io.h>
 #include <ShlObj.h>
-#elif defined GTK
-#include <libgen.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #elif defined __APPLE__
 #include <libgen.h>
 #include <resolv.h>
@@ -55,7 +52,40 @@ void ChromeFiddlerScriptObject::InitHandler() {
     AddFunction(item);
 }
 
-#if defined __APPLE__
+#if _WINDOWS
+namespace {
+
+int WINAPI BrowserCallback(NativeWindow nw, UINT uMsg, LPARAM lParam, LPARAM lpData) {
+    switch (uMsg) {
+    case BFFM_INITIALIZED:
+        BrowserParam* param = (BrowserParam*)lpData;
+        SendMessage(nw, BFFM_SETSELECTION, TRUE, (LPARAM)param->initial_path);
+        SetWindowText(nw, param->title);
+        NativeWindow treeview = FindWindowEx(nw, NULL, L"SysTreeView32", NULL);
+        NativeWindow ok_button = FindWindowEx(nw, NULL, L"Button", NULL);
+
+        if (treeview && ok_button) {
+            RECT rect_treeview,rect_ok_button;
+
+            GetWindowRect(treeview, &rect_treeview);
+            POINT pt_treeview, pt_button;
+            pt_treeview.x = rect_treeview.left;
+            pt_treeview.y = 0;
+            ScreenToClient(nw, &pt_treeview);
+
+            GetWindowRect(ok_button, &rect_ok_button);
+            pt_button.x = rect_ok_button.left;
+            pt_button.y = rect_ok_button.top;
+            ScreenToClient(nw, &pt_button);
+            MoveWindow(treeview, pt_treeview.x, pt_treeview.x, rect_treeview.right-rect_treeview.left, pt_button.y-2*pt_treeview.x, TRUE);
+        }
+        break;
+    }
+    return 0;
+}
+
+}
+#elif defined __APPLE__
 std::string GetFilePath(const char* path, const char* dialog_title, std::string);
 #endif
 
@@ -89,11 +119,11 @@ bool ChromeFiddlerScriptObject::OpenFileDialog(const NPVariant* args, uint32_t a
 
         bRet = GetOpenFileName(&ofn);
     } else {
-        BROWSEINFO info={0};
+        BROWSEINFO info = {0};
         info.hwndOwner = get_plugin()->get_native_window();
-        info.lpszTitle = param.title;
+        info.lpszTitle = NULL;
         info.pszDisplayName = display_name;
-        info.lpfn = NULL;
+        info.lpfn = BrowserCallback;
         info.ulFlags = BIF_RETURNONLYFSDIRS;
         info.lParam = (LPARAM)&param;
 
@@ -118,3 +148,13 @@ bool ChromeFiddlerScriptObject::OpenFileDialog(const NPVariant* args, uint32_t a
 
     return true;
 }
+
+// static
+void ChromeFiddlerScriptObject::InvokeCallback(NPP npp, NPObject* callback, const char* param) {
+    NPVariant npParam;
+    STRINGZ_TO_NPVARIANT(param, npParam);
+    NPVariant result;
+    VOID_TO_NPVARIANT(result);
+    NPN_InvokeDefault(npp, callback, &npParam, 1, &result);
+}
+

@@ -28,12 +28,12 @@ bool Log::OpenLog(const char* header) {
 #ifdef _WINDOWS
     char filename[MAX_PATH];
     GetLocalTime(&time_);
-    sprintf_s(filename, "C:\\log\\%s_%d%02d%02d_%d.log", header, time_.wYear, time_.wMonth, time_.wDay, GetCurrentProcessId());
+    sprintf_s(filename, "C:\\Windows\\Temp\\%s_%d%02d%02d_%d.log", header, time_.wYear, time_.wMonth, time_.wDay, GetCurrentProcessId());
 #else
     char filename[MAX_PATH];
     time_t nowtime = time(NULL);
     struct tm* time_ = localtime(&nowtime);
-    sprintf(filename, "/tmp/%s_%d%02d%02d_%d.log", header, time_->tm_year+1900, time_->tm_mon, time_->tm_mday, getpid());
+    sprintf(filename, "/tmp/%s_%d%02d%02d_%d.log", header, time_->tm_year+1900, time_->tm_mon+1, time_->tm_mday, getpid());
 #endif
     file_ = fopen(filename, "a");
     if (file_ == NULL)

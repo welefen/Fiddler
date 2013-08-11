@@ -5,9 +5,6 @@
 
 #ifdef _WINDOWS
 typedef HWND NativeWindow;
-#elif defined GTK
-#include <X11/X.h>
-typedef Window NativeWindow;
 #elif defined MAC
 #include "npapi.h"
 typedef NP_CGContext* NativeWindow;

@@ -8,4 +8,6 @@ g++ -framework Cocoa -DMAC -Wall \
     -o chrome_fiddler.plugin/Contents/MacOS/chrome_fiddler \
     log.cc np_entry.cc npn_entry.cc npp_entry.cc plugin_base.cc \
     plugin_factory.cc chrome_fiddler.mm chrome_fiddler_plugin.cc \
-    chrome_fiddler_script_object.cc script_object_base.cc script_object_factory.cc
+    chrome_fiddler_script_object.cc script_object_base.cc script_object_factory.cc &&\
+cp chrome_fiddler.plugin/Contents/MacOS/chrome_fiddler \
+    ../src/bin/chrome_fiddler.plugin/Contents/MacOS/

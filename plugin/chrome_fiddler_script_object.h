@@ -1,11 +1,6 @@
 #ifndef CHROME_FIDDLER_SCRIPT_OBJECT_H_
 #define CHROME_FIDDLER_SCRIPT_OBJECT_H_
 
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <sys/types.h>
-#endif
-
 #include "npfunctions.h"
 #include "script_object_base.h"
 
@@ -22,6 +17,9 @@ public:
     bool OpenFileDialog(const NPVariant* args, uint32_t argCount, NPVariant* result);
 
     void InitHandler();
+
+private:
+    static void InvokeCallback(NPP npp, NPObject* callback, const char* param);
 
 };
 
