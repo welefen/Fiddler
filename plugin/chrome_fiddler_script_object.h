@@ -15,6 +15,8 @@ public:
     void Invalidate() {}
     bool Construct(const NPVariant* args, uint32_t argCount, NPVariant* result) { return true; }
     bool OpenFileDialog(const NPVariant* args, uint32_t argCount, NPVariant* result);
+    bool GetFilePath(const NPVariant* args, uint32_t argCount, NPVariant* result);
+    bool GetFolderPath(const NPVariant* args, uint32_t argCount, NPVariant* result);
 
     void InitHandler();
 

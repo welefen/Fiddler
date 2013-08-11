@@ -2,7 +2,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-std::string GetFilePath(const char* path, const char* dialog_title, std::string option) {
+std::string GetFilePathNS(const char* path, const char* dialog_title, bool isFolder) {
     int runResult;
     NSString *str = [NSString stringWithUTF8String:path];
     str = [NSString stringWithFormat:@"%@%@", @"file://", str];
@@ -10,14 +10,11 @@ std::string GetFilePath(const char* path, const char* dialog_title, std::string 
 
     NSOpenPanel *op = [NSOpenPanel openPanel];
 
-    if (option == "file") {
-        [op setCanChooseDirectories:NO];
-        [op setCanChooseFiles:YES];
-    } else if (option == "path") {
+    if (isFolder) {
         [op setCanChooseDirectories:YES];
         [op setCanChooseFiles:NO];
     } else {
-        [op setCanChooseDirectories:YES];
+        [op setCanChooseDirectories:NO];
         [op setCanChooseFiles:YES];
     }
     [op setAllowsMultipleSelection:NO];

@@ -50,9 +50,15 @@ void ChromeFiddlerScriptObject::InitHandler() {
     item.function_name = "OpenFileDialog";
     item.function_pointer = ON_INVOKEHELPER(&ChromeFiddlerScriptObject::OpenFileDialog);
     AddFunction(item);
+    item.function_name = "GetFilePath";
+    item.function_pointer = ON_INVOKEHELPER(&ChromeFiddlerScriptObject::GetFilePath);
+    AddFunction(item);
+    item.function_name = "GetFolderPath";
+    item.function_pointer = ON_INVOKEHELPER(&ChromeFiddlerScriptObject::GetFolderPath);
+    AddFunction(item);
 }
 
-#if _WINDOWS
+#ifdef _WINDOWS
 namespace {
 
 int WINAPI BrowserCallback(NativeWindow nw, UINT uMsg, LPARAM lParam, LPARAM lpData) {
@@ -86,56 +92,105 @@ int WINAPI BrowserCallback(NativeWindow nw, UINT uMsg, LPARAM lParam, LPARAM lpD
 
 }
 #elif defined __APPLE__
-std::string GetFilePath(const char* path, const char* dialog_title, std::string);
+std::string GetFilePathNS(const char* path, const char* dialog_title, bool isFolder);
 #endif
 
 bool ChromeFiddlerScriptObject::OpenFileDialog(const NPVariant* args, uint32_t argCount, NPVariant* result) {
     if (argCount < 2 || !NPVARIANT_IS_STRING(args[0]) || !NPVARIANT_IS_STRING(args[1]))
         return false;
 
-    std::string path(NPVARIANT_TO_STRING(args[0]).UTF8Characters, NPVARIANT_TO_STRING(args[0]).UTF8Length);
     std::string option(NPVARIANT_TO_STRING(args[1]).UTF8Characters, NPVARIANT_TO_STRING(args[1]).UTF8Length);
-    std::string dialog_title = "select something, please";
+    std::string title = "Select A Stuff, Buddy";
+    size_t length = title.length();
 
-#if _WINDOWS
+    NPVariant dialog_title;
+    STRINGN_TO_NPVARIANT(title.c_str(), length, dialog_title);
+    const NPVariant params[2] = {args[0], dialog_title};
+
+    if (option == "file")
+        return GetFilePath(params, 2, result);
+    else
+        return GetFolderPath(params, 2, result);
+}
+
+bool ChromeFiddlerScriptObject::GetFilePath(const NPVariant* args, uint32_t argCount, NPVariant* result) {
+    if (argCount < 2 || !NPVARIANT_IS_STRING(args[0]) || !NPVARIANT_IS_STRING(args[1]))
+        return false;
+
+    std::string path(NPVARIANT_TO_STRING(args[0]).UTF8Characters, NPVARIANT_TO_STRING(args[0]).UTF8Length);
+    std::string title(NPVARIANT_TO_STRING(args[1]).UTF8Characters, NPVARIANT_TO_STRING(args[1]).UTF8Length);
+
+#ifdef _WINDOWS
     TCHAR display_name[MAX_PATH] = {0};
     BrowserParam param = {0};
     BOOL bRet;
 
     MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, param.initial_path, MAX_PATH);
-    MultiByteToWideChar(CP_UTF8, 0, dialog_title.c_str(), -1, param.title, MAX_PATH);
+    MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, param.title, MAX_PATH);
 
-    if (option == "file") {
-        OPENFILENAME ofn = {0};
-        ofn.lStructSize = sizeof(ofn);
-        ofn.hwndOwner = get_plugin()->get_native_window();
-        ofn.lpstrFilter = _T("All Files(*.*)\0*.*\0");
-        ofn.lpstrInitialDir = param.initial_path;
-        ofn.lpstrFile = display_name;
-        ofn.nMaxFile = sizeof(display_name) / sizeof(*display_name);
-        ofn.nFilterIndex = 0;
-        ofn.lpstrTitle = param.title;
-        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER;
+    OPENFILENAME ofn = {0};
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = get_plugin()->get_native_window();
+    ofn.lpstrFilter = _T("All Files(*.*)\0*.*\0");
+    ofn.lpstrInitialDir = param.initial_path;
+    ofn.lpstrFile = display_name;
+    ofn.nMaxFile = sizeof(display_name) / sizeof(*display_name);
+    ofn.nFilterIndex = 0;
+    ofn.lpstrTitle = param.title;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
-        bRet = GetOpenFileName(&ofn);
-    } else {
-        BROWSEINFO info = {0};
-        info.hwndOwner = get_plugin()->get_native_window();
-        info.lpszTitle = NULL;
-        info.pszDisplayName = display_name;
-        info.lpfn = BrowserCallback;
-        info.ulFlags = BIF_RETURNONLYFSDIRS;
-        info.lParam = (LPARAM)&param;
-
-        bRet = SHGetPathFromIDList(SHBrowseForFolder(&info), display_name);
-    }
+    bRet = GetOpenFileName(&ofn);
 
     char utf8[MAX_PATH];
     WideCharToMultiByte(CP_UTF8, 0, bRet ? display_name : param.initial_path, -1, utf8, MAX_PATH, 0, 0);
     size_t length = strlen(utf8);
 
-#elif defined __APPLE__
-    std::string pathStr = GetFilePath(path.c_str(), dialog_title.c_str(), option);
+#elif __APPLE__
+    std::string pathStr = GetFilePathNS(path.c_str(), title.c_str(), false);
+    const char* utf8 = pathStr.c_str();
+    size_t length = pathStr.length();
+
+#endif
+
+    char* copy = (char *)NPN_MemAlloc(length + 1);
+    memcpy(copy, utf8, length);
+    copy[length] = 0;
+    STRINGN_TO_NPVARIANT(copy, length, *result);
+
+    return true;
+}
+
+bool ChromeFiddlerScriptObject::GetFolderPath(const NPVariant* args, uint32_t argCount, NPVariant* result) {
+    if (argCount < 2 || !NPVARIANT_IS_STRING(args[0]) || !NPVARIANT_IS_STRING(args[1]))
+        return false;
+
+    std::string path(NPVARIANT_TO_STRING(args[0]).UTF8Characters, NPVARIANT_TO_STRING(args[0]).UTF8Length);
+    std::string title(NPVARIANT_TO_STRING(args[1]).UTF8Characters, NPVARIANT_TO_STRING(args[1]).UTF8Length);
+
+#ifdef _WINDOWS
+    TCHAR display_name[MAX_PATH] = {0};
+    BrowserParam param = {0};
+    BOOL bRet;
+
+    MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, param.initial_path, MAX_PATH);
+    MultiByteToWideChar(CP_UTF8, 0, title.c_str(), -1, param.title, MAX_PATH);
+
+    BROWSEINFO info = {0};
+    info.hwndOwner = get_plugin()->get_native_window();
+    info.lpszTitle = NULL;
+    info.pszDisplayName = display_name;
+    info.lpfn = BrowserCallback;
+    info.ulFlags = BIF_RETURNONLYFSDIRS;
+    info.lParam = (LPARAM)&param;
+
+    bRet = SHGetPathFromIDList(SHBrowseForFolder(&info), display_name);
+
+    char utf8[MAX_PATH];
+    WideCharToMultiByte(CP_UTF8, 0, bRet ? display_name : param.initial_path, -1, utf8, MAX_PATH, 0, 0);
+    size_t length = strlen(utf8);
+
+#elif __APPLE__
+    std::string pathStr = GetFilePathNS(path.c_str(), title.c_str(), true);
     const char* utf8 = pathStr.c_str();
     size_t length = pathStr.length();
 
