@@ -31,3 +31,8 @@ std::string GetFilePathNS(const char* path, const char* dialog_title, bool isFol
     }
 }
 
+bool IsWritableFile(const char* path) {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    return [fm isWritableFileAtPath:[NSString stringWithUTF8String:path]];
+}
+

@@ -17,6 +17,7 @@ public:
     bool OpenFileDialog(const NPVariant* args, uint32_t argCount, NPVariant* result);
     bool GetFilePath(const NPVariant* args, uint32_t argCount, NPVariant* result);
     bool GetFolderPath(const NPVariant* args, uint32_t argCount, NPVariant* result);
+    bool SaveFile(const NPVariant* args, uint32_t argCount, NPVariant* result);
 
     void InitHandler();
 

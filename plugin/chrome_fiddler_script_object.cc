@@ -56,6 +56,9 @@ void ChromeFiddlerScriptObject::InitHandler() {
     item.function_name = "GetFolderPath";
     item.function_pointer = ON_INVOKEHELPER(&ChromeFiddlerScriptObject::GetFolderPath);
     AddFunction(item);
+    item.function_name = "SaveFile";
+    item.function_pointer = ON_INVOKEHELPER(&ChromeFiddlerScriptObject::SaveFile);
+    AddFunction(item);
 }
 
 #ifdef _WINDOWS
@@ -93,6 +96,7 @@ int WINAPI BrowserCallback(NativeWindow nw, UINT uMsg, LPARAM lParam, LPARAM lpD
 }
 #elif defined __APPLE__
 std::string GetFilePathNS(const char* path, const char* dialog_title, bool isFolder);
+bool IsWritableFile(const char* path);
 #endif
 
 bool ChromeFiddlerScriptObject::OpenFileDialog(const NPVariant* args, uint32_t argCount, NPVariant* result) {
@@ -201,6 +205,61 @@ bool ChromeFiddlerScriptObject::GetFolderPath(const NPVariant* args, uint32_t ar
     copy[length] = 0;
     STRINGN_TO_NPVARIANT(copy, length, *result);
 
+    return true;
+}
+
+bool ChromeFiddlerScriptObject::SaveFile(const NPVariant* args, uint32_t argCount, NPVariant* result) {
+    if (argCount < 3 || !NPVARIANT_IS_STRING(args[0]) || !NPVARIANT_IS_STRING(args[1]) || !NPVARIANT_IS_OBJECT(args[2]) || !NPVARIANT_TO_OBJECT(args[2]))
+        return false;
+
+    const char* fileName = NPVARIANT_TO_STRING(args[0]).UTF8Characters;
+    const char* content = NPVARIANT_TO_STRING(args[1]).UTF8Characters;
+    uint32_t length = NPVARIANT_TO_STRING(args[1]).UTF8Length;
+    NPObject* callback = NPVARIANT_TO_OBJECT(args[2]);
+
+#ifdef _WINDOWS
+    TCHAR szWideBuf[MAX_PATH] = { 0 };
+    MultiByteToWideChar(CP_UTF8, 0, fileName, -1, szWideBuf, MAX_PATH);
+    DWORD d = GetFileAttributes(szWideBuf);
+    if (!PathFileExists(szWideBuf) || d & FILE_ATTRIBUTE_DIRECTORY || d & FILE_ATTRIBUTE_READONLY) {
+        g_logger.WriteLog("error", "SaveFile: Is A Folder");
+
+#elif defined __APPLE__
+    if (!IsWritableFile(fileName)) {
+        g_logger.WriteLog("error", "SaveFile: File Is Not Writable");
+
+#endif
+        InvokeCallback(get_plugin()->get_npp(), callback, "failure");
+        return true;
+    }
+
+#ifdef _WINDOWS
+    int len = MultiByteToWideChar(CP_UTF8, 0, fileName, -1, NULL, 0);
+    wchar_t* wstr = new wchar_t[len + 1];
+    memset(wstr, 0, len * 2 + 2);
+    MultiByteToWideChar(CP_UTF8, 0, fileName, -1, wstr, len);
+
+    len = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, NULL, NULL);
+    char* path = new char[len + 1];
+    memset(path, 0, len + 1);
+    WideCharToMultiByte (CP_ACP, 0, wstr, -1, path, len, NULL, NULL);
+
+    delete[] wstr;
+    FILE* out = fopen(path, "w");
+
+#elif defined __APPLE__
+    FILE* out = fopen(fileName, "w");
+
+#endif
+    if (out) {
+        fwrite(content, length, 1, out);
+        fclose(out);
+        InvokeCallback(get_plugin()->get_npp(), callback, "success");
+        return true;
+    }
+
+    g_logger.WriteLog("error", "SaveFile: File Cannot Open");
+    InvokeCallback(get_plugin()->get_npp(), callback, "failure");
     return true;
 }
 
