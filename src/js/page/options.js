@@ -90,7 +90,7 @@ $(function(){
                         }catch(e){}
                     }
                 };
-
+                detail.requestHeaders = detail.requestHeaders || [];
                 var html = Fiddler.tmpl($('#headersTpl').html(), detail);
                 $('#tab-headers').html(html)
             },
