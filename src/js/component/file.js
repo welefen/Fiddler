@@ -23,15 +23,9 @@ var Fiddler_File = function(){
         }
         return text;
     }
-    function getMimeType(type){
-        var types = {
-            "image": "image/png",
-            "script": "text/javascript",
-            "stylesheet": "text/css",
-            "main_frame": "text/html",
-            "sub_frame": "text/html"
-        };
-        return types[type] || "text/plain";
+    function getMimeType(file) {
+        var idx = file.lastIndexOf(".");
+        return (idx == -1) ? "text/plain" : MimeTea.cup(file.substring(++idx));
     }
     return {
         /**
@@ -40,14 +34,14 @@ var Fiddler_File = function(){
          * @return {[type]}      [description]
          */
         getLocalFile: function(file, encoding, type){
-            var xhr = new XMLHttpRequest(); 
+            var xhr = new XMLHttpRequest();
             xhr.open('GET', file, false);
-            xhr.send(null); 
+            xhr.send(null);
             var text = xhr.responseText || xhr.responseXML;
             if (!text) {
                 return false;
             };
-            var mimeType = getMimeType(type);
+            var mimeType = getMimeType(file);
             if (encoding) {
                 text = "data:"+mimeType+"; " + encoding + "," + encodeText(text, type);
             };
