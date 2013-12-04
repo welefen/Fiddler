@@ -155,8 +155,8 @@
 
       <div class="rule-edit-item">
         <span class="name">Pattern:</span> 
-        <input id="rulePatternType" type="text" value="String" readonly="true" class="rule-input rule-pattern-type" maxlength="100"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
-        <input type="text" class="rule-pattern rule-value" id="rulePattern" maxlength="100">
+        <input id="rulePatternType" type="text" value="String" readonly="true" class="rule-input rule-pattern-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input type="text" class="rule-pattern rule-value" id="rulePattern">
         <ul class="dropdown-menu" id="patternMenu" role="menu" aria-labelledby="dropdownMenu">
           <li><a tabindex="-1" href="#" data-type="string" data-value="http://www.example.com/xxx/a.html">String</a></li>
           <li><a tabindex="-1" href="#" data-type="regexp" data-value="^http:.*\.png$">Regexp</a></li>
@@ -168,8 +168,8 @@
 
       <div class="rule-edit-item">
         <span class="name">Replace:</span> 
-        <input id="ruleReplaceType" type="text" maxlength="100" value="File" readonly="true" class="rule-input rule-replace-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
-        <input id="ruleReplace" type="text" class="rule-replace rule-value" id="patternInput" maxlength="100">
+        <input id="ruleReplaceType" type="text" value="File" readonly="true" class="rule-input rule-replace-type"><a class="btn btn-select" href="#"><i class="icon-chevron-down"></i></a>
+        <input id="ruleReplace" type="text" class="rule-replace rule-value" id="patternInput">
         <ul class="dropdown-menu" id="replaceMenu" role="menu" aria-labelledby="dropdownMenu">
           <li><a tabindex="-1" href="#" data-type="delay" data-value="100ms">Delay</a></li>
           <li><a tabindex="-1" href="#" data-type="header" data-value="newHeader=newValue">Header</a></li>

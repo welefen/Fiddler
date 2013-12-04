@@ -22,3 +22,8 @@ fi
 cp src/manifest.json output/src/
 cp -r src/bin output/src/;
 mv output/src/ output/Fiddler;
+if [[ $1 == "1" ]];then
+    /usr/local/bin/php clean.php;
+    cd output;
+    zip -r Fiddler.zip Fiddler/;
+fi
