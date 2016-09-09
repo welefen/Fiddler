@@ -578,5 +578,6 @@ $(function(){
             
         });*/
     }
-    init();
-})
+    
+    setTimeout(init, 2000);
+});
