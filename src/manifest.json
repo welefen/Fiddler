@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fiddler",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Fiddler for chrome extension",
   "background": {
   	"page": "html/background.html"

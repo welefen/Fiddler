@@ -579,5 +579,5 @@ $(function(){
         });*/
     }
     
-    setTimeout(init, 2000);
+    init();
 });

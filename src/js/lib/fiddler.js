@@ -35,10 +35,22 @@ var Fiddler = function(){
         if (url.indexOf('?fiddler=') > -1 || url.indexOf('&fiddler=') > -1 ) {
             return false;
         };
+        var ignoreList = [
+            'http://hm.baidu.com/',
+            'http://push.zhanzhang.baidu.com/',
+            'http://api.share.baidu.com/',
+            'http://www.ueapp.com/',
+            'http://ueapp.b0.upaiyun.com/'
+        ];
+        var flag = ignoreList.some(function(item){
+            return url.indexOf(item) === 0;
+        })
+        if(flag){
+            return false;
+        }
         if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
             return true;
         };
-        
         return false;
     }
     Fiddler.queryUrl = function (url, key) {
