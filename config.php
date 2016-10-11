@@ -26,6 +26,7 @@ return array (
 	'MOD_JS_TPL_REPLACE' => false,  //是否进行前端模版替换
 	'MOD_STRING_REPLACE' => true,  //是否进行代码替换功能
 	'MOD_STATIC_VERSION' => 1,  //静态文件版本号，1或者true为query,2为新文件模式
+	'COMPRESS_JS_USE_JINGCHUANG' => false,
     'HTML_COMPRESS_OPTIONS' => array('compress_tpl_script'=> true)
 );
 
